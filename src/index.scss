@@ -1,9 +1,7 @@
 $theme-colors: (
   "primary": #4C82E8,
-  "primary-light": #80A5EB,
-  "secondary": #4CCCE8,
-  "tertiary": #80A5EB,
-  "color-gray":#EFEFF0,
+  "primary-light": #cedfff,
+  "secondary": #80A5EB,
   "light": #4C4F53,
   "dark": #333333,
   "danger": #c00000,
@@ -11,20 +9,24 @@ $theme-colors: (
   "success": #28a745,
   "info": #50d5e9,
 
+  "gray": #4C4F53,
   "gray1": #8E8E93,
   "gray2": #AEAEB2,
   "gray3": #C7C7CC,
   "gray4": #D1D1D6,
   "gray5": #E5E5EA,
   "gray6": #F2F2F7,
+  "white": #FFFFFF,
 );
 
 $font-family-sans-serif: 'Inter',
   -apple-system,
   sans-serif;
 
-$border-radius: .6rem !default;
-$border-radius-sm: .8rem !default;
+$background-color: #E8E9EE;
+
+$border-radius: .8rem !default;
+$border-radius-sm: 0.8rem !default;
 $border-radius-lg: .8rem !default;
 
 $border-color: #4C4F53;
@@ -59,6 +61,21 @@ $enable-responsive-font-sizes: true;
   --regular---bold: 1rem;
   --regulat---bold: 1rem;
   --title-2---bold: 1.2rem;
+
+  --color-primary: #4C82E8;
+  --color-primary-light: #80A5EB;
+
+  --bg-color-modal: #1e1e1e32;
+
+  --color-gray: #4C4F53;
+  --color-gray1: #8E8E93;
+  --color-gray2: #AEAEB2;
+  --color-gray3: #C7C7CC;
+  --color-gray4: #D1D1D6;
+  --color-gray5: #E5E5EA;
+  --color-gray6: #F2F2F7;
+  --color-white: #FFFFFF;
+
 
 
 }
@@ -114,6 +131,20 @@ body,
   background-color: transparent;
 }
 
+.w-md-50 {
+  @media screen and (min-width: 768px) {
+    width: 50% !important;
+
+  }
+}
+
+.w-lg-25 {
+  @media screen and (min-width: 992px) {
+    width: 25% !important;
+
+  }
+}
+
 .h-screen {
   height: 100vh;
 }
@@ -126,8 +157,56 @@ body,
   font-size: var(--callout);
 }
 
+.bg-none {
+  background-color: transparent;
+}
+
 
 .form-control {
   border: none;
   background-color: #F2F2F7;
+
+  ::placeholder {
+    opacity: .5 !important;
+    /* Firefox */
+  }
+
+
+}
+
+
+
+// Animations ------------------------------
+
+@keyframes slideInRight {
+  from {
+    -webkit-transform: translate3d(100%, 0, 0);
+    transform: translate3d(100%, 0, 0);
+    visibility: visible;
+  }
+
+  to {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+.slideInRight {
+  -webkit-animation-name: slideInRight;
+  animation-name: slideInRight;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
+}
+
+.fadeIn {
+  -webkit-animation-name: fadeIn;
+  animation-name: fadeIn;
 }

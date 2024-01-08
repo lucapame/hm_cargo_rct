@@ -1,12 +1,13 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { signOut } from 'firebase/auth';
 import { UserType } from '../../types/User.t';
-import { auth } from '../../resources/firebase/firebase';
+
 import {
   passwordReset,
   userLogin,
   userUpdate,
 } from '../actions/auth.redux.actions';
+import { auth } from '../../resources/firebase/firebase';
 
 type AuthStateState = {
   loading: boolean;
@@ -28,69 +29,56 @@ const initialState: AuthStateState = {
 const userSlice = createSlice({
   name: 'user',
   initialState,
-  reducers: {
-    setUser: (state, action) => {
+  reducers: (create) => ({
+    setUser: create.reducer<UserType>((state, action) => {
       state.userInfo = action.payload;
       state.isAutenticated = true;
       state.success = true;
-      state.isAdmin = action.payload.isAdmin;
-    },
-    logout: (state) => {
+      state.isAdmin = action.payload.isAdmin || false;
+    }),
+
+    logout: create.reducer((state) => {
       signOut(auth);
       state.userInfo = {} as UserType;
       state.isAutenticated = false;
       state.success = false;
-    },
-  },
-  extraReducers: {
-    // login user
-    [userLogin.pending as any]: (state) => {
+    }),
+  }),
+  extraReducers: (builder) => {
+    builder.addCase(userLogin.pending, (state) => {
       state.loading = true;
-      state.error = null;
-    },
-    [userLogin.fulfilled as any]: (state, { payload }) => {
+    });
+    builder.addCase(userLogin.fulfilled, (state, action) => {
       state.loading = false;
-      state.userInfo = payload;
-      state.success = true;
+      state.userInfo = action.payload;
       state.isAutenticated = true;
-      state.isAdmin = payload.isAdmin;
-    },
-    [userLogin.rejected as any]: (state, { payload }) => {
-      state.loading = false;
-      state.error = payload;
-      state.isAutenticated = false;
-      state.success = false;
-    },
-    // Update user
-    [userUpdate.pending as any]: (state) => {
-      state.loading = true;
-      state.error = null;
-    },
-    [userUpdate.fulfilled as any]: (state, { payload }) => {
-      state.loading = false;
-      state.userInfo = payload;
       state.success = true;
-    },
-    [userUpdate.rejected as any]: (state, { payload }) => {
+      state.isAdmin = action.payload.isAdmin ?? false;
+    });
+    builder.addCase(userLogin.rejected, (state, action) => {
       state.loading = false;
-      state.error = payload;
-      state.success = payload;
-    },
-    // Reset password
-    [passwordReset.pending as any]: (state) => {
+      state.error = action.error.message ?? null;
+    });
+
+    builder.addCase(userUpdate.pending, (state) => {
       state.loading = true;
-      state.error = null;
-      state.success = false;
-    },
-    [passwordReset.fulfilled as any]: (state, { payload }) => {
+    });
+    builder.addCase(userUpdate.fulfilled, (state, action) => {
       state.loading = false;
+      state.userInfo = action.payload;
+      state.isAutenticated = true;
       state.success = true;
-    },
-    [passwordReset.rejected as any]: (state, { payload }) => {
+      state.isAdmin = action.payload.isAdmin ?? false;
+    });
+    builder.addCase(userUpdate.rejected, (state, action) => {
       state.loading = false;
-      state.error = payload;
-      state.success = false;
-    },
+      state.error = action.error.message ?? null;
+    });
+
+    builder.addCase(passwordReset.rejected, (state, action) => {
+      state.loading = false;
+      state.error = action.error.message ?? null;
+    });
   },
 });
 export const { setUser, logout } = userSlice.actions;

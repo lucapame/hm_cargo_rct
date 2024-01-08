@@ -1,8 +1,8 @@
 'use client';
 import react, { useEffect, useState } from 'react';
 import { useAppDispatch } from './useReduxDispatch';
-import { auth } from '../resources/firebase/firebase';
-import { logout, setUser } from '../redux/slices/auth.redux.slice';
+import { logout, setUser } from '../../redux/slices/auth.redux.slice';
+import { auth } from '../../resources/firebase/firebase';
 
 const useAuthState = () => {
   const [pending, setPending] = useState(true);

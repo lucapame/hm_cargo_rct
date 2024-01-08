@@ -1,17 +1,19 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 
 import { useForm } from 'react-hook-form';
 import { useNavigate, useLocation } from 'react-router-dom';
 import {
   useAppSelector,
   useAppDispatch,
-} from '../../hooks/useReduxDispatch';
+} from '../../utils/hooks/useReduxDispatch';
 import { userLogin } from '../../redux/actions/auth.redux.actions';
 import logo from '../../assets/img/cargo.svg';
 import { withGuard } from '../../components/routes/withGuard.component';
 
 const LoginPage = () => {
-  const { loading, error } = useAppSelector((state) => state.auth);
+  const { loading, error, isAutenticated } = useAppSelector(
+    (state) => state.auth,
+  );
   const {
     register,
     handleSubmit,
@@ -24,6 +26,12 @@ const LoginPage = () => {
   let navigate = useNavigate();
   const { search } = useLocation();
   const redirect = new URLSearchParams(search).get('redirect');
+
+  useEffect(() => {
+    if (isAutenticated) {
+      navigate('/');
+    }
+  }, [isAutenticated, navigate]);
 
   const onSubmit = async (data: any) => {
     await dispatch(userLogin(data));

@@ -1,113 +1,98 @@
 import React from 'react';
 import { withGuard } from '../../components/routes/withGuard.component';
-import { logout } from '../../redux/slices/auth.redux.slice';
+import logo from '../../assets/img/cargo.svg';
+
 import {
-  useAppDispatch,
-  useAppSelector,
-} from '../../hooks/useReduxDispatch';
-import { userUpdate } from '../../redux/actions/auth.redux.actions';
-import { useForm } from 'react-hook-form';
+  Content,
+  Layout,
+  Sidebar,
+} from '../../components/layout/styled.layout';
+import { Outlet } from 'react-router-dom';
+import NavLinkExtendable from '../../components/common/component.NavLink';
+import { logout } from '../../redux/slices/auth.redux.slice';
+import { useAppDispatch } from '../../utils/hooks/useReduxDispatch';
 
 const HomePage = () => {
-  const { userInfo, loading, isAdmin } = useAppSelector(
-    (state) => state.auth,
-  );
   const dispatch = useAppDispatch();
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-  } = useForm({ defaultValues: userInfo });
-  const onSubmit = async (data: any) => {
-    await dispatch(userUpdate(data));
-  };
 
   return (
-    <div>
-      <button
-        className='btn btn-primary'
-        type='button'
-        onClick={() => {
-          dispatch(logout());
-        }}
-      >
-        logout
-      </button>
+    <Layout>
+      <Sidebar className='d-flex flex-column align-items-center p-4'>
+        <img
+          src={logo}
+          alt='logo'
+          className='img-fluid mb-5'
+          width={70}
+        />
 
-      <form
-        className='text-start d-grid w-100 '
-        onSubmit={handleSubmit(onSubmit)}
-      >
-        <div className='row mb-3'>
-          <div className='col-12 col-md-3 pe-4'>
-            <h4 className='m-0'>Información Personal</h4>
-            <p className='text-muted'>
-              Esta informacion aparecera en tu perfil
-            </p>
-          </div>
-          <div className='col-12 col-md-9 row'>
-            <div className='col-md-6'>
-              <label className='text-muted' htmlFor='useerName'>
-                Nombre
-              </label>
-              <input
-                type='text'
-                className={`${
-                  errors.displayName && 'is-invalid'
-                } form-control  `}
-                id='displayName'
-                placeholder='Nombre'
-                {...register('displayName', {
-                  required: true,
-                  validate: (value) => {
-                    return !!value?.trim();
-                  },
-                })}
-              />
-              {errors.displayName && (
-                <span className='invalid-feedback'>
-                  Introduce este campo
-                </span>
-              )}
-            </div>
-            <div className='col-md-6 mt-md-0 mt-4'>
-              <label className='text-muted' htmlFor='useerName'>
-                Correo Electrónico
-              </label>
-              <input
-                type='email'
-                disabled
-                className={`${
-                  errors.email && 'is-invalid'
-                } form-control  `}
-                id='email'
-                placeholder='Correo Electrónico'
-                {...register('email', {
-                  required: true,
-                  validate: (value) => {
-                    return !!value?.trim();
-                  },
-                })}
-              />
-              {errors.email && (
-                <span className='invalid-feedback'>
-                  Introduce este campo
-                </span>
-              )}
-            </div>
-          </div>
-        </div>
+        <NavLinkExtendable
+          label='Inicio'
+          to='/'
+          icon='fa-solid fa-home'
+        ></NavLinkExtendable>
 
-        <div className='mt-1 text-end pe-4 mb-3'>
-          <button
-            className='btn btn-primary text-white px-5'
-            type='submit'
-          >
-            {loading ? 'loading' : 'Guardar'}
-          </button>
-        </div>
-      </form>
-    </div>
+        <NavLinkExtendable
+          label='Partes'
+          to='/parts'
+          icon='fa-solid fa-box'
+          secondaryLinks={[
+            {
+              to: '/inventory',
+              label: 'Inventario',
+              icon: 'fa-solid fa-clipboard-list',
+            },
+          ]}
+        ></NavLinkExtendable>
+
+        <NavLinkExtendable
+          label='Camiones'
+          to='/trucks'
+          icon='fa-solid fa-truck'
+          secondaryLinks={[
+            {
+              to: '/truck-list',
+              label: 'Choferes',
+              icon: 'fa-solid fa-truck-front',
+            },
+            {
+              to: '/maintenences',
+              label: 'Mantenimientos',
+              icon: 'fa-solid fa-tools',
+            },
+          ]}
+        ></NavLinkExtendable>
+
+        <NavLinkExtendable
+          label='Usuarios'
+          to='/users'
+          icon='fa-solid fa-user'
+        ></NavLinkExtendable>
+
+        <NavLinkExtendable
+          label='Archivos'
+          to='/files'
+          icon='fa-solid fa-file'
+          secondaryLinks={[
+            {
+              to: '/file-list',
+              label: 'Lista de archivos',
+              icon: 'fa-solid fa-file-alt',
+            },
+          ]}
+        ></NavLinkExtendable>
+
+        <button
+          onClick={() => dispatch(logout())}
+          className='btn btn-gray5 btn-sm mt-auto w-100 align-self-end'
+        >
+          <i className='fa-solid fa-sign-out me-2'></i>
+          Cerrar sesión
+        </button>
+      </Sidebar>
+      <Content className='bg-blue'>
+        <Outlet />
+      </Content>
+    </Layout>
   );
 };
 
