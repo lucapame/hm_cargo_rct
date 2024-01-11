@@ -5,13 +5,13 @@ import { Truck } from '../../types';
 import { truckFirestoreConverter } from '../../utils/data.util';
 import {
   createDocument,
+  deleteDocument,
   getAllDocuments,
 } from '../../resources/services/dataService';
 
 export const createTruck = createAsyncThunk(
   'trucks/create',
   async (data: Truck, { rejectWithValue }) => {
-    console.log(data);
     try {
       const truck = await createDocument<Truck>(
         'trucks',
@@ -19,6 +19,18 @@ export const createTruck = createAsyncThunk(
         truckFirestoreConverter,
       );
       return truck;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const deleteTruck = createAsyncThunk(
+  'trucks/delete',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      await deleteDocument('trucks', id);
+      return id;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

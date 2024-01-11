@@ -3,6 +3,8 @@ import {
   collection,
   getDoc,
   getDocs,
+  deleteDoc,
+  doc,
 } from '@firebase/firestore';
 import { db } from '../firebase/firebase';
 import { mapErrorCodeToMessage } from '../../utils/helpers';
@@ -37,9 +39,22 @@ export async function createDocument<T>(
   }
 }
 
+export async function deleteDocument<T>(
+  collectionId: string,
+  documentId: string,
+): Promise<void> {
+  try {
+    await deleteDoc(doc(db, collectionId, documentId));
+  } catch (error: any) {
+    console.error('Error deleting document:', error);
+    throw new Error(mapErrorCodeToMessage(error.code));
+  }
+}
+
 export async function getAllDocuments<T>(
   collectionId: string,
   converter: {
+    toFireStore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
     fromFireStore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
   },
 ): Promise<T[]> {

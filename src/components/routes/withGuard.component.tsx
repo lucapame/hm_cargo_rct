@@ -2,6 +2,7 @@ import React, { useEffect } from 'react';
 import { useAppSelector } from '../../utils/hooks/useReduxDispatch';
 import useAuthState from '../../utils/hooks/useAuthState';
 import { useNavigate } from 'react-router'; // Import Outlet from react-router
+import PageLoader from '../common/component.pageLoader';
 
 export const withGuard = (Component: React.ComponentType<any>) => {
   const GuardedComponent = (props: any) => {
@@ -16,7 +17,7 @@ export const withGuard = (Component: React.ComponentType<any>) => {
     }, [pending, isAutenticated, navigate]);
 
     if (pending) {
-      return <div>Loading...</div>;
+      return <PageLoader />;
     }
 
     return <Component {...props} />;

@@ -12,7 +12,7 @@ import { auth } from '../../resources/firebase/firebase';
 type AuthStateState = {
   loading: boolean;
   userInfo: UserType;
-  error: string | null;
+  error: string | any;
   isAutenticated: boolean;
   success: boolean;
   isAdmin: boolean;
@@ -47,6 +47,7 @@ const userSlice = createSlice({
   extraReducers: (builder) => {
     builder.addCase(userLogin.pending, (state) => {
       state.loading = true;
+      state.error = null;
     });
     builder.addCase(userLogin.fulfilled, (state, action) => {
       state.loading = false;
@@ -57,7 +58,7 @@ const userSlice = createSlice({
     });
     builder.addCase(userLogin.rejected, (state, action) => {
       state.loading = false;
-      state.error = action.error.message ?? null;
+      state.error = action.payload;
     });
 
     builder.addCase(userUpdate.pending, (state) => {

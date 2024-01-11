@@ -20,6 +20,12 @@ export const mapErrorCodeToMessage = (erroCode: string) => {
     case 'auth/invalid-password':
       return 'La contraseña es incorrecta';
 
+    case 'auth/invalid-login-credentials':
+      return 'El correo o la contraseña son incorrectos';
+
+    case 'auth/too-many-requests':
+      return 'Demasiados intentos fallidos, intente más tarde';
+
     case 'auth/invalid-email':
       return 'Correo electrónico no válido';
 

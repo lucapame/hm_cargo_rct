@@ -1,10 +1,12 @@
 import React, { useCallback, useEffect } from 'react';
 import { useLocation, useMatch, useNavigate } from 'react-router';
 import {
+  DropdownContainer,
   NavLinkButton,
   SecondaryNavLinkButton,
 } from '../layout/styled.layout';
 import { Link } from 'react-router-dom';
+import { set } from 'react-hook-form';
 
 interface SecondaryLink {
   to: string;
@@ -32,33 +34,37 @@ function NavLinkExtendable({
     (link) => link.to === location.pathname,
   );
 
-  const [isExpanded, setIsExpanded] = React.useState(isActive);
+  const [isExpanded, setIsExpanded] = React.useState(false);
 
   const handleclick = useCallback(() => {
     setIsExpanded(true);
-    navigate(to);
-  }, [navigate, to]);
+    secondaryLinks.length === 0 && navigate(to);
+  }, [navigate, secondaryLinks.length, to]);
+
   return (
     <div
       className={` ${
         isActive || secondaryIsActive ? '' : ''
-      } border-0 card w-100 m-2 bg-none`}
+      } border-0 card w-100 m-2 bg-none pb-2`}
     >
-      <button
-        onClick={handleclick}
-        className={` ${
-          isActive || secondaryIsActive
-            ? 'btn-primary-light text-primary '
-            : ''
-        } btn border-0 text-start w-100`}
+      <div
+        className='d-flex align-items-center'
+        style={{ cursor: 'pointer' }}
       >
-        <i className={icon + ' me-2'}></i>
-        <span className=''>{label}</span>
-      </button>
+        <span className='nav-link-icon d-md-none d-lg-inline-block'>
+          <i className={icon + ' me-2'}></i>
+        </span>
+        <span className='nav-link-title'>{label}</span>
+        {secondaryLinks.length > 0 && (
+          <i className='fa-solid fa-chevron-down ps-2 fa-xs' />
+        )}
+      </div>
+
       {isExpanded && secondaryLinks.length > 0 && (
-        <div className='d-flex flex-column align-items-start ms-4 w-100 border-start border-gray5'>
+        <DropdownContainer className='d-flex flex-column  align-items-start w-100'>
           {secondaryLinks.map((link, index) => (
             <SecondaryNavLinkButton
+              onClick={() => setIsExpanded(false)}
               key={index}
               to={link.to}
               className={({ isActive, isPending }) =>
@@ -69,7 +75,7 @@ function NavLinkExtendable({
               <span className=''> {link.label}</span>
             </SecondaryNavLinkButton>
           ))}
-        </div>
+        </DropdownContainer>
       )}
     </div>
   );

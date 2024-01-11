@@ -15,4 +15,5 @@ export interface Truck {
   insuranceExpiration?: string;
   insuranceCompany?: string;
   insurancePolicy?: string;
+  notes?: string;
 }

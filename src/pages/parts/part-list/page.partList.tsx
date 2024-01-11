@@ -1,31 +1,31 @@
 import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import PartTable from '../../../components/common/Tables/component.PartTab';
 import {
   useAppDispatch,
   useAppSelector,
 } from '../../../utils/hooks/useReduxDispatch';
-import { getAllTrucks } from '../../../redux/actions/trucks.redux.actions';
+import { getAllParts } from '../../../redux/actions/parts.redux.actions';
 import Spinner from '../../../components/common/component.spinner';
-import TruckTable from '../../../components/common/Tables/component.TruckTable';
-import { Link } from 'react-router-dom';
 
-const TruckListPage = () => {
+function PartListPage() {
   const { loading, error, dataArray } = useAppSelector(
-    (state) => state.trucks,
+    (state) => state.parts,
   );
 
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(getAllTrucks());
+    dispatch(getAllParts());
   }, [dispatch]);
 
   return (
-    <div className='w-100'>
+    <div>
       <div className='container-xl my-4'>
         <div className='row g-2 align-items-center'>
           <div className='col'>
-            <div className='page-pretitle'>General</div>
-            <h2 className='page-title'>Camiones</h2>
+            <div className='page-pretitle'>Inventario</div>
+            <h2 className='page-title'>Lista de partes</h2>
           </div>
 
           <div className='col-auto ms-auto d-print-none'>
@@ -35,7 +35,7 @@ const TruckListPage = () => {
                 className='btn btn-primary d-none d-sm-inline-block'
               >
                 <i className='fas fa-plus pe-2' />
-                Nuevo camión
+                Nueva parte
               </Link>
             </div>
           </div>
@@ -57,20 +57,18 @@ const TruckListPage = () => {
 
         {dataArray.length === 0 && !loading && !error && (
           <div className='alert alert-info' role='alert'>
-            No hay camiones registrados
+            No hay partes registradas
           </div>
         )}
 
         {dataArray && !loading && !error && (
           <div className=' overflow-auto'>
-            <TruckTable
+            <PartTable
               headers={[
-                'Nombre',
-                'Marca',
-                'Modelo',
-                'Año',
-                'Placa',
-                'VIN',
+                'Numero de parte',
+                'Fabricante',
+                'Descripción',
+                'SKU (Identificador)',
               ]}
               data={dataArray}
             />
@@ -79,6 +77,6 @@ const TruckListPage = () => {
       </div>
     </div>
   );
-};
+}
 
-export default TruckListPage;
+export default PartListPage;

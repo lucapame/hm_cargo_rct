@@ -9,6 +9,7 @@ import {
 
 import { UserType, UserProfile } from '../../types/User.t';
 import { auth } from '../../resources/firebase/firebase';
+import { mapErrorCodeToMessage } from '../../utils/helpers';
 
 export const userLogin = createAsyncThunk(
   'user/login',
@@ -49,7 +50,7 @@ export const userLogin = createAsyncThunk(
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
-        return rejectWithValue(errorCode);
+        return rejectWithValue(mapErrorCodeToMessage(errorCode));
       });
   },
 );
@@ -75,8 +76,8 @@ export const userUpdate = createAsyncThunk(
       .catch((error) => {
         // Handle Errors here.
         const errorCode = error.code;
-        console.log(errorCode);
-        return rejectWithValue(errorCode);
+        console.log(error);
+        return rejectWithValue(mapErrorCodeToMessage(errorCode));
       });
   },
 );
@@ -92,7 +93,7 @@ export const passwordReset = createAsyncThunk(
         const errorCode = error.code;
         const errorMessage = error.message;
         console.log(errorCode, errorMessage);
-        return rejectWithValue(errorCode);
+        return rejectWithValue(mapErrorCodeToMessage(errorCode));
         // ..
       });
   },

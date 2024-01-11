@@ -15,6 +15,8 @@ export const Sidebar = styled.div`
 
 export const Content = styled.div`
   flex: 1;
+
+  overflow: auto;
 `;
 
 export const NavLinkButton = styled(NavLink)`
@@ -45,7 +47,7 @@ export const SecondaryNavLinkButton = styled(NavLink)`
   border: none;
   padding: 0.5rem 1rem;
   text-align: left;
-  width: 90%;
+  width: 100%;
   transition: all 0.2s ease-in-out;
   text-decoration: none;
   color: var(--color-gray);
@@ -56,6 +58,7 @@ export const SecondaryNavLinkButton = styled(NavLink)`
   &:hover {
     scale: 1.01;
     color: #000;
+    text-decoration: none;
   }
 
   &.active {
@@ -63,4 +66,10 @@ export const SecondaryNavLinkButton = styled(NavLink)`
 
     color: var(--color-primary);
   }
+`;
+
+export const DropdownContainer = styled.div`
+  position: relative;
+  display: inline-block;
+  width: 100%;
 `;

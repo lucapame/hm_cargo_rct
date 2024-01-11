@@ -1,10 +1,11 @@
 import { createSlice } from '@reduxjs/toolkit';
-import { Truck } from '../../types';
+
 import {
-  createTruck,
-  deleteTruck,
-  getAllTrucks,
-} from '../actions/trucks.redux.actions';
+  createPart,
+  deletePart,
+  getAllParts,
+} from '../actions/parts.redux.actions';
+import { Part } from '../../types/part.t';
 
 export interface TruckInititialState {
   loading: boolean;
@@ -26,8 +27,8 @@ const initialState: TruckInititialState = {
   succsess: false,
 };
 
-const truckSlice = createSlice({
-  name: 'trucks',
+const partsSlice = createSlice({
+  name: 'parts',
   initialState: initialState,
   reducers: (create: any) => ({
     filterData: (state, action) => {
@@ -42,55 +43,55 @@ const truckSlice = createSlice({
     },
   }),
   extraReducers: (builder) => {
-    builder.addCase(createTruck.pending, (state) => {
+    builder.addCase(createPart.pending, (state) => {
       state.dataItem = null;
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(createTruck.fulfilled, (state, { payload }) => {
+    builder.addCase(createPart.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.dataItem = payload;
       state.succsess = true;
     });
-    builder.addCase(createTruck.rejected, (state, { payload }) => {
+    builder.addCase(createPart.rejected, (state, { payload }) => {
       state.dataItem = null;
       state.loading = false;
       state.error = payload;
     });
 
-    // deleteTruck
-    builder.addCase(deleteTruck.pending, (state) => {
+    // deletePart
+    builder.addCase(deletePart.pending, (state) => {
       state.dataItem = null;
       state.loading = true;
       state.error = null;
     });
-    builder.addCase(deleteTruck.fulfilled, (state, { payload }) => {
+    builder.addCase(deletePart.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.dataArray = state.dataArray.filter(
-        (item: Truck) => item.id !== payload,
+        (item: Part) => item.id !== payload,
       );
       state.succsess = true;
     });
-    builder.addCase(deleteTruck.rejected, (state, { payload }) => {
+    builder.addCase(deletePart.rejected, (state, { payload }) => {
       state.dataItem = null;
       state.loading = false;
       state.error = payload;
     });
 
-    // getAllTrucks
-    builder.addCase(getAllTrucks.pending, (state) => {
+    // getAllParts
+    builder.addCase(getAllParts.pending, (state) => {
       state.dataArray = [];
       state.loading = true;
       state.error = null;
     });
 
-    builder.addCase(getAllTrucks.fulfilled, (state, { payload }) => {
+    builder.addCase(getAllParts.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.dataArray = payload;
       state.succsess = true;
     });
 
-    builder.addCase(getAllTrucks.rejected, (state, { payload }) => {
+    builder.addCase(getAllParts.rejected, (state, { payload }) => {
       state.dataArray = [];
       state.loading = false;
       state.error = payload;
@@ -98,5 +99,5 @@ const truckSlice = createSlice({
   },
 });
 
-export const { filterData } = truckSlice.actions;
-export default truckSlice.reducer;
+export const { filterData } = partsSlice.actions;
+export default partsSlice.reducer;
