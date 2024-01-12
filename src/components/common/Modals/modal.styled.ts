@@ -39,18 +39,23 @@ export const ModalContent = styled.div<{
   ::-webkit-scrollbar-track {
     background-color: transparent !important;
   }
-  background-color: var(--bg-color);
-  padding: 1rem;
+
   width: fit-content;
   min-width: 390px;
-  max-height: 90%;
+  max-height: 95%;
   overflow-y: scroll;
-  border-radius: 0.8rem;
+
   max-width: ${({ $limitsize }) => $limitsize};
   animation: zoomInSmall 0.2s ease-in-out;
 
   @media (max-width: 600px) {
     min-width: 95%;
+  }
+
+  .card-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
   }
 `;
 

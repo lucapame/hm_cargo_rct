@@ -5,6 +5,10 @@ export interface Truck {
   model: string;
   motor: string;
   motorSerialNumber: string;
+
+  engine: string;
+  engineSerialNumber: string;
+
   year: number;
   color?: string;
   transmission: string;
@@ -16,4 +20,6 @@ export interface Truck {
   insuranceCompany?: string;
   insurancePolicy?: string;
   notes?: string;
+  updatedAt: string;
+  isActive: boolean;
 }

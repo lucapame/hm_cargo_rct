@@ -1,5 +1,6 @@
-import { deleteTruck } from '../../../redux/actions/trucks.redux.actions';
-import { useAppDispatch } from '../../../utils/hooks/useReduxDispatch';
+import { useNavigate } from 'react-router';
+import { timeAgo } from '../../../utils/helpers';
+import { Truck } from '../../../types';
 
 interface TableProps {
   data: any[];
@@ -7,10 +8,8 @@ interface TableProps {
 }
 
 const TruckTable: React.FC<TableProps> = ({ data, headers }) => {
-  const dispatch = useAppDispatch();
-  const handleDelete = (id: string) => {
-    dispatch(deleteTruck(id));
-  };
+  const navigate = useNavigate();
+
   return (
     <div className='card'>
       <div className='card-body border-bottom py-3'>
@@ -36,13 +35,15 @@ const TruckTable: React.FC<TableProps> = ({ data, headers }) => {
               {headers.map((header) => {
                 return <th key={header}>{header}</th>;
               })}
-
-              <th></th>
             </tr>
           </thead>
           <tbody>
-            {data.map((truck, index) => (
-              <tr key={truck.id}>
+            {data.map((truck: Truck, index) => (
+              <tr
+                key={truck.id}
+                onClick={() => navigate(`/trucks/${truck.id}`)}
+                className='selectable hover'
+              >
                 <td>
                   <input
                     className='form-check-input m-0 align-middle'
@@ -56,14 +57,17 @@ const TruckTable: React.FC<TableProps> = ({ data, headers }) => {
                 <td>{truck.year}</td>
                 <td>{truck.licensePlate}</td>
                 <td>{truck.vin}</td>
-                <td className='text-end'>
-                  <button
-                    className='btn text-danger border-0'
-                    onClick={() => handleDelete(truck.id)}
+                <td>
+                  <span
+                    className={`${
+                      truck?.isActive ? 'status-green' : 'status-red'
+                    }
+                status `}
                   >
-                    <i className='fas fa-trash-alt me-2' /> Eliminar
-                  </button>
+                    {truck?.isActive ? 'En uso' : 'Inactivo'}
+                  </span>
                 </td>
+                <td>{timeAgo(truck.updatedAt)}</td>
               </tr>
             ))}
           </tbody>

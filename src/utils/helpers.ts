@@ -41,6 +41,9 @@ export const mapErrorCodeToMessage = (erroCode: string) => {
     case 'permission-denied':
       return 'No tienes permisos para realizar esta acción';
 
+    case 'invalid-argument':
+      return 'Sucedio un error inesperado, intente más tarde';
+
     default:
       return `Código de error: ${erroCode}`;
   }

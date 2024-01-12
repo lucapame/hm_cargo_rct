@@ -7,6 +7,6 @@ export interface Part {
   manufacturer: string;
   notes?: string;
   image?: string;
-  updated?: string;
+  updatedAt: string;
   fitsIn?: string[];
 }

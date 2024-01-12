@@ -4,12 +4,22 @@ import {
   useAppDispatch,
   useAppSelector,
 } from '../../utils/hooks/useReduxDispatch';
-import { createTruck } from '../../redux/actions/trucks.redux.actions';
+import {
+  createTruck,
+  updateTruck,
+} from '../../redux/actions/trucks.redux.actions';
 import Spinner from '../common/component.spinner';
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import { Truck } from '../../types';
 
-const TruckForm = () => {
+const TruckForm = ({
+  defaultValues,
+  isEditing = false,
+}: {
+  defaultValues?: Truck;
+  isEditing?: boolean;
+}) => {
   const { loading, error, succsess } = useAppSelector(
     (state) => state.trucks,
   );
@@ -17,13 +27,22 @@ const TruckForm = () => {
   const {
     register,
     handleSubmit,
+    watch,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: defaultValues,
+  });
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
   const onSubmit = async (data: any) => {
+    if (isEditing) {
+      dispatch(updateTruck({ ...data, id: defaultValues?.id }));
+      navigate('/trucks/' + defaultValues?.id);
+      return;
+    }
+
     await dispatch(createTruck(data));
     if (succsess && !error) {
       navigate('/trucks');
@@ -32,23 +51,8 @@ const TruckForm = () => {
 
   return (
     <div className=''>
-      <div className=' my-4'>
-        <div className='row g-2 align-items-center'>
-          <div className='col'>
-            <div className='d-flex align-items-center'>
-              <Link className='' to='/trucks'>
-                <i className='fa-solid fa-arrow-left me-2' />
-              </Link>
-              <h2 className='page-title'>Nuevo Camión</h2>
-            </div>
-            <small>
-              Aquí puedes crear un nuevo camión para tu flota.
-            </small>
-          </div>
-        </div>
-      </div>
       <form
-        className='container-lg card py-4 mb-4'
+        className='container-lg card  mb-4 border-0'
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className=''>
@@ -190,7 +194,7 @@ const TruckForm = () => {
                   {...register('year', {
                     required: true,
                     validate: (value) => {
-                      return !!value?.trim();
+                      return !!value;
                     },
                   })}
                 />
@@ -199,6 +203,24 @@ const TruckForm = () => {
                     Introduce este campo
                   </span>
                 )}
+              </div>
+            </div>
+
+            <div className='col-lg-3'>
+              <label className='form-label'>
+                Estado del vehiculo{' '}
+              </label>
+              <div>
+                <div className='form-check form-switch'>
+                  <input
+                    className='form-check-input '
+                    type='checkbox'
+                    {...register('isActive', {})}
+                  />
+                  <label className='form-check-label ps-2 fw-bold'>
+                    {watch('isActive') ? 'En uso' : 'Inactivo'}
+                  </label>
+                </div>
               </div>
             </div>
             <label className='h3 my-4'>Informacion Adicional</label>

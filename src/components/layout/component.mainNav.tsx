@@ -1,9 +1,8 @@
 import React from 'react';
-import NavLinkExtendable from '../common/component.NavLink';
 import { NavLink } from 'react-router-dom';
 
 const links = [
-  // { name: 'Inicio', path: '/', icon: 'fa-solid fa-house' },
+  { name: 'Inicio', path: '/', icon: 'fa-solid fa-house' },
   { name: 'Partes', path: '/parts', icon: 'fa-solid fa-box-open' },
   {
     name: 'Inventario',
@@ -11,6 +10,11 @@ const links = [
     icon: 'fa-solid fa-boxes',
   },
   { name: 'Camiónes', path: '/trucks', icon: 'fa-solid fa-truck' },
+  {
+    name: 'Servicios',
+    path: '/maintenences',
+    icon: 'fa-solid fa-tools',
+  },
 
   { name: 'Usuarios', path: '/users', icon: 'fa-solid fa-users' },
   { name: 'Archivos', path: '/files', icon: 'fa-solid fa-file' },

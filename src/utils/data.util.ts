@@ -1,4 +1,4 @@
-import { DocumentData } from 'firebase/firestore';
+import { DocumentData, Timestamp } from 'firebase/firestore';
 import { Truck } from '../types';
 import { Part } from '../types/part.t';
 
@@ -8,6 +8,8 @@ export const truckFirestoreConverter = {
       displayName,
       make,
       model,
+      motor,
+      motorSerialNumber,
       year,
       color,
       transmission,
@@ -18,6 +20,8 @@ export const truckFirestoreConverter = {
       insuranceExpiration,
       insuranceCompany,
       insurancePolicy,
+      notes,
+      isActive,
     } = data;
 
     const exportData: DocumentData = {
@@ -34,6 +38,11 @@ export const truckFirestoreConverter = {
       insuranceExpiration,
       insuranceCompany,
       insurancePolicy,
+      motor,
+      motorSerialNumber,
+      notes,
+      isActive: isActive || false,
+      updatedAt: Timestamp.now(),
     };
 
     // Remove undefined properties
@@ -42,7 +51,7 @@ export const truckFirestoreConverter = {
         exportData[key] === undefined && delete exportData[key],
     );
 
-    return data;
+    return exportData;
   },
   fromFireStore: (id: string, data: any) => {
     // Convert Firestore data to Publication
@@ -62,6 +71,13 @@ export const truckFirestoreConverter = {
       insuranceExpiration: data.insuranceExpiration,
       insuranceCompany: data.insuranceCompany,
       insurancePolicy: data.insurancePolicy,
+      motor: data.motor,
+      motorSerialNumber: data.motorSerialNumber,
+      notes: data.notes,
+      updatedAt: new Date(
+        data.updatedAt.seconds * 1000,
+      ).toISOString() as string,
+      isActive: data.isActive,
     } as Truck;
   },
 };
@@ -76,7 +92,6 @@ export const partFirestoreConverter = {
       manufacturer,
       notes,
       image,
-      updated,
       fitsIn,
     } = data;
 
@@ -88,7 +103,7 @@ export const partFirestoreConverter = {
       manufacturer,
       notes,
       image,
-      updated,
+      updatedAt: new Date().toISOString(),
       fitsIn,
     };
 
@@ -98,7 +113,7 @@ export const partFirestoreConverter = {
         exportData[key] === undefined && delete exportData[key],
     );
 
-    return data;
+    return exportData;
   },
 
   fromFireStore: (id: string, data: any) => {
@@ -115,6 +130,7 @@ export const partFirestoreConverter = {
       image: data.image,
       updated: data.updated,
       fitsIn: data.fitsIn,
+      updatedAt: data.updatedAt,
     } as Part;
   },
 };

@@ -5,10 +5,11 @@ import LoginPage from '../../pages/login-page/page.login';
 import HomePage from '../../pages/homePage/page.homePage';
 import TruckListPage from '../../pages/trucks/truck-list/page.truckList';
 import PartListPage from '../../pages/parts/part-list/page.partList';
-import BasicLayout from '../layout/component.basicLayout';
 import MainPage from '../../pages/page.main';
-import TruckForm from '../forms/component.truckForm';
 import PartForm from '../forms/component.partForm';
+import TruckDetailsPage from '../../pages/trucks/truck-page/page.truckDetails';
+import CreateTruckPage from '../../pages/trucks/truck-page/page.createTruck';
+import EditTruckPage from '../../pages/trucks/truck-page/page.editTruck';
 
 function App() {
   return (
@@ -34,7 +35,15 @@ function App() {
                 <div>tmaintenences Vacío, ir a partes o camiones</div>
               }
             />
-            <Route path='trucks/create' element={<TruckForm />} />
+            <Route
+              path='trucks/create'
+              element={<CreateTruckPage />}
+            />
+            <Route path='trucks/:id' element={<TruckDetailsPage />} />
+            <Route
+              path='trucks/edit/:id'
+              element={<EditTruckPage />}
+            />
 
             {/* Files */}
             <Route

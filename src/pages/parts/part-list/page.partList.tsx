@@ -30,10 +30,7 @@ function PartListPage() {
 
           <div className='col-auto ms-auto d-print-none'>
             <div className='btn-list'>
-              <Link
-                to='create'
-                className='btn btn-primary d-none d-sm-inline-block'
-              >
+              <Link to='create' className='btn btn-primary '>
                 <i className='fas fa-plus pe-2' />
                 Nueva parte
               </Link>

@@ -4,6 +4,8 @@ import {
   createTruck,
   deleteTruck,
   getAllTrucks,
+  getTruckById,
+  updateTruck,
 } from '../actions/trucks.redux.actions';
 
 export interface TruckInititialState {
@@ -11,7 +13,7 @@ export interface TruckInititialState {
   searchLoading: boolean;
   dataArray: any[];
   searchResults: any[];
-  dataItem: any;
+  dataItem: Truck | null;
   error: any;
   succsess: boolean;
 }
@@ -46,6 +48,7 @@ const truckSlice = createSlice({
       state.dataItem = null;
       state.loading = true;
       state.error = null;
+      state.succsess = false;
     });
     builder.addCase(createTruck.fulfilled, (state, { payload }) => {
       state.loading = false;
@@ -63,6 +66,7 @@ const truckSlice = createSlice({
       state.dataItem = null;
       state.loading = true;
       state.error = null;
+      state.succsess = false;
     });
     builder.addCase(deleteTruck.fulfilled, (state, { payload }) => {
       state.loading = false;
@@ -77,11 +81,32 @@ const truckSlice = createSlice({
       state.error = payload;
     });
 
+    //updateDocument
+    builder.addCase(updateTruck.pending, (state) => {
+      state.dataItem = null;
+      state.loading = true;
+      state.error = null;
+      state.succsess = false;
+    });
+
+    builder.addCase(updateTruck.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.dataItem = payload;
+      state.succsess = true;
+    });
+
+    builder.addCase(updateTruck.rejected, (state, { payload }) => {
+      state.dataItem = null;
+      state.loading = false;
+      state.error = payload;
+    });
+
     // getAllTrucks
     builder.addCase(getAllTrucks.pending, (state) => {
       state.dataArray = [];
       state.loading = true;
       state.error = null;
+      state.succsess = false;
     });
 
     builder.addCase(getAllTrucks.fulfilled, (state, { payload }) => {
@@ -92,6 +117,27 @@ const truckSlice = createSlice({
 
     builder.addCase(getAllTrucks.rejected, (state, { payload }) => {
       state.dataArray = [];
+      state.loading = false;
+      state.error = payload;
+    });
+
+    //Get by id
+
+    builder.addCase(getTruckById.pending, (state) => {
+      state.dataItem = null;
+      state.loading = true;
+      state.error = null;
+      state.succsess = false;
+    });
+
+    builder.addCase(getTruckById.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.dataItem = payload;
+      state.succsess = true;
+    });
+
+    builder.addCase(getTruckById.rejected, (state, { payload }) => {
+      state.dataItem = null;
       state.loading = false;
       state.error = payload;
     });

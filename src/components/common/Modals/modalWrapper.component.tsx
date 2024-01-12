@@ -8,11 +8,13 @@ const ModalWrapperComponent = ({
   onClose,
   display,
   limitsize,
+  title,
 }: {
   children: any;
   onClose: any;
   display: boolean;
   limitsize?: string;
+  title?: string;
 }) => {
   const wrapperRef = useRef(null);
 
@@ -24,16 +26,21 @@ const ModalWrapperComponent = ({
         ref={wrapperRef}
         data-testid='portal-modal-content'
         $limitsize={limitsize}
+        className='card'
       >
-        <button
-          className='btn text-gray3 border-0 btn-sm text-sm'
-          onClick={onClose}
-          data-testid='close-modal-btn'
-          type='button'
-        >
-          <i className='fa-solid fa-circle-xmark' />
-        </button>
-        <div className='container-fluid mt-2'>{children}</div>
+        <div className='card-header '>
+          <h5 className='card-title'>{title}</h5>
+          <button
+            className='btn  border-0 '
+            onClick={onClose}
+            data-testid='close-modal-btn'
+            type='button'
+          >
+            <i className='fa-solid fa-xmark' />
+          </button>
+        </div>
+
+        <div className='card-body overflow-auto'>{children}</div>
       </ModalContent>
     </ModalContainer>,
     document.querySelector('#global-modal' as any),
