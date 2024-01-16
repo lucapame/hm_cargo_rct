@@ -56,7 +56,7 @@ const PartForm = () => {
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className='row'>
-          <div className='col-lg-6 mb-3'>
+          <div className='col-lg-3 mb-3'>
             <label className='form-label'>
               Número de parte <span className='text-danger'>*</span>{' '}
             </label>
@@ -80,7 +80,7 @@ const PartForm = () => {
               </span>
             )}
           </div>
-          <div className='col-lg-3 mb-3'>
+          <div className='col-lg-5 mb-3'>
             <label className='form-label'>
               Fabricante <span className='text-danger'>*</span>{' '}
             </label>
@@ -105,7 +105,7 @@ const PartForm = () => {
             )}
           </div>
 
-          <div className='col-lg-3 mb-3'>
+          <div className='col-lg-4 mb-3'>
             <label className='form-label'>
               SKU (Identificador único)
             </label>
@@ -124,6 +124,37 @@ const PartForm = () => {
               </span>
             )}
           </div>
+
+          <div className='col-lg-3 mb-3'>
+            <label className='form-label'>Precio</label>
+
+            <input
+              type='number'
+              data-mask='000.000.000.000.000,00'
+              data-mask-visible='true'
+              autoComplete='off'
+              className={`${
+                errors.price && 'is-invalid'
+              } form-control `}
+              id='price'
+              placeholder='Introduce el precio'
+              {...register('price', {
+                valueAsNumber: true,
+                required: 'Introduce este campo',
+                min: {
+                  value: 0,
+                  message: 'El precio debe ser mayor a 0',
+                },
+              })}
+            />
+
+            {errors.price && (
+              <span className='invalid-feedback'>
+                {String(errors.price.message) || ''}
+              </span>
+            )}
+          </div>
+
           <div className='col-lg-12 mb-3'>
             <label className='form-label'>
               Camiones compatibles{' '}

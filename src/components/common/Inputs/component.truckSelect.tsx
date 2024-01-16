@@ -7,6 +7,7 @@ import {
   useAppSelector,
 } from '../../../utils/hooks/useReduxDispatch';
 import { getAllTrucks } from '../../../redux/actions/trucks.redux.actions';
+import { Truck } from '../../../types';
 
 const TruckSelectComponent = ({
   selectedOptions,
@@ -57,7 +58,9 @@ const TruckSelectComponent = ({
   };
 
   const handleSelectOption = (option: any) => {
-    if (selectedOptions.find((item) => item.value === option.id)) {
+    if (selectedOptions.find((item) => item.value === option.value)) {
+      setSearchValue('');
+      setOptionsDisplay(false);
       return;
     }
     setSelectedOptions([...selectedOptions, option]);
@@ -104,18 +107,22 @@ const TruckSelectComponent = ({
                   }}
                 >
                   {filteredOptions.length > 0 ? (
-                    filteredOptions.map((option) => (
+                    filteredOptions.map((option: Truck) => (
                       <span
                         key={option.id}
                         className='p-1 selectable option'
                         onClick={() => {
                           handleSelectOption({
-                            label: option.displayName,
+                            label: `${option.displayName}, ${option.make} ${option.model}`,
                             value: option.id,
                           });
                         }}
                       >
-                        {option.displayName}
+                        {option.displayName}, (
+                        <span>
+                          {option.make} {option.model}
+                        </span>
+                        )
                       </span>
                     ))
                   ) : !truckLoading ? (

@@ -21,7 +21,9 @@ const CreateTruckPage = () => {
           </div>
         </div>
       </div>
-      <TruckForm />
+      <div className='card pt-3'>
+        <TruckForm />
+      </div>
     </div>
   );
 };
