@@ -48,6 +48,13 @@ export const mapErrorCodeToMessage = (erroCode: string) => {
       return `Código de error: ${erroCode}`;
   }
 };
+
+export const formatMoney = (amount: number) => {
+  return new Intl.NumberFormat('us-US', {
+    style: 'currency',
+    currency: 'USD',
+  }).format(amount);
+};
 const MONTH_NAMES = [
   'Enero',
   'Febrero',

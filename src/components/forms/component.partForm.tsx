@@ -136,12 +136,13 @@ const PartForm = ({
           </div>
 
           <div className='col-lg-3 mb-3'>
-            <label className='form-label'>Precio</label>
+            <label className='form-label'>Precio (USD)</label>
 
             <input
               type='number'
               data-mask='000.000.000.000.000,00'
               data-mask-visible='true'
+              step='any'
               autoComplete='off'
               className={`${
                 errors.price && 'is-invalid'

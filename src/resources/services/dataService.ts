@@ -13,13 +13,7 @@ import {
   endAt,
   updateDoc,
 } from '@firebase/firestore';
-import {
-  ref,
-  uploadBytesResumable,
-  getDownloadURL,
-  getMetadata,
-  deleteObject,
-} from 'firebase/storage';
+import { ref, deleteObject } from 'firebase/storage';
 import { db, storage } from '../firebase/firebase';
 import { mapErrorCodeToMessage } from '../../utils/helpers';
 import { Query } from '../../types';

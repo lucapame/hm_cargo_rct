@@ -5,7 +5,7 @@ import {
 } from '../../../utils/hooks/useReduxDispatch';
 import placeholderImage from '../../../assets/img/no-image.png';
 import { Link, useParams } from 'react-router-dom';
-import { timeAgo } from '../../../utils/helpers';
+import { formatMoney, timeAgo } from '../../../utils/helpers';
 import Spinner from '../../../components/common/component.spinner';
 import {
   deletePart,
@@ -127,9 +127,9 @@ const PartDetailsPage = () => {
                     </div>
                   </div>
                   <div className='datagrid-item'>
-                    <div className='datagrid-title'>Precio</div>
+                    <div className='datagrid-title'>Precio (USD)</div>
                     <div className='datagrid-content'>
-                      {dataItem?.price || '-'}
+                      {formatMoney(dataItem?.price) || '-'}
                     </div>
                   </div>
 
@@ -174,6 +174,35 @@ const PartDetailsPage = () => {
                   </div>
                 </div>
               </div>
+            </div>
+            <div className='card mt-3'>
+              <div className='card-header'>
+                <h3 className='card-title'>
+                  Transacciones en inventario
+                </h3>
+              </div>
+              <div className='card-body'>
+                <div className='datagrid'>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Entradas</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.transactions?.in || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Salidas</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.transactions?.out || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Stock</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.transactions?.stock || '-'}
+                    </div>
+                  </div>
+                </div>
+              </div>{' '}
             </div>
           </div>
         </div>
