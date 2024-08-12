@@ -5,10 +5,8 @@ export interface Truck {
   model: string;
   motor: string;
   motorSerialNumber: string;
-
   engine: string;
   engineSerialNumber: string;
-
   year: number;
   color?: string;
   transmission: string;

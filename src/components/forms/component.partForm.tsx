@@ -6,10 +6,20 @@ import {
   useAppSelector,
 } from '../../utils/hooks/useReduxDispatch';
 import TruckSelectComponent from '../common/Inputs/component.truckSelect';
-import { createPart } from '../../redux/actions/parts.redux.actions';
+import {
+  createPart,
+  updatePart,
+} from '../../redux/actions/parts.redux.actions';
 import Spinner from '../common/component.spinner';
+import { Part } from '../../types/part.t';
 
-const PartForm = () => {
+const PartForm = ({
+  defaultValues,
+  isEditing = false,
+}: {
+  defaultValues?: Part;
+  isEditing?: boolean;
+}) => {
   const { loading, error, succsess } = useAppSelector(
     (state) => state.parts,
   );
@@ -17,14 +27,32 @@ const PartForm = () => {
     register,
     handleSubmit,
     formState: { errors },
-  } = useForm({});
+  } = useForm({
+    defaultValues: defaultValues,
+  });
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
 
-  const [selectedTrucks, setSelectedTrucks] = useState<any[]>([]);
+  const [selectedTrucks, setSelectedTrucks] = useState<any[]>(
+    defaultValues?.fitsIn || [],
+  );
 
   const onSubmit = async (data: any) => {
+    if (isEditing) {
+      dispatch(
+        updatePart({
+          ...data,
+          id: defaultValues?.id,
+          fitsIn: selectedTrucks,
+        }),
+      );
+      if (succsess && !error) {
+        navigate('/parts');
+      }
+      return;
+    }
+
     await dispatch(createPart({ ...data, fitsIn: selectedTrucks }));
     if (succsess && !error) {
       navigate('/parts');
@@ -33,26 +61,8 @@ const PartForm = () => {
 
   return (
     <div className=''>
-      <div className=' my-4'>
-        <div className='row g-2 align-items-center'>
-          <div className='col'>
-            <div className='d-flex align-items-center'>
-              <Link className='' to='/parts'>
-                <i className='fa-solid fa-arrow-left me-2' />
-              </Link>
-              <h2 className='page-title'>Nueva parte</h2>
-            </div>
-            <small>
-              Aquí puedes registrar una nueva parte para el
-              inventario. Los campos marcados con{' '}
-              <span className='text-danger'>*</span> son obligatorios.
-            </small>
-          </div>
-        </div>
-      </div>
-
       <form
-        className='container-lg card py-4 mb-4'
+        className='container-lg'
         onSubmit={handleSubmit(onSubmit)}
       >
         <div className='row'>
@@ -157,6 +167,31 @@ const PartForm = () => {
 
           <div className='col-lg-12 mb-3'>
             <label className='form-label'>
+              Desctipcion <span className='text-danger'>*</span>{' '}
+            </label>
+            <textarea
+              className={`${
+                errors.description && 'is-invalid'
+              } form-control `}
+              rows={3}
+              placeholder='Introduce la descripcion del producto'
+              id='description'
+              {...register('description', {
+                required: true,
+                validate: (value) => {
+                  return !!value?.trim();
+                },
+              })}
+            />
+            {errors.description && (
+              <span className='invalid-feedback'>
+                Introduce este campo
+              </span>
+            )}
+          </div>
+
+          <div className='col-lg-12 mb-3'>
+            <label className='form-label'>
               Camiones compatibles{' '}
               <span className='text-danger'>*</span>{' '}
             </label>
@@ -168,23 +203,23 @@ const PartForm = () => {
 
           <div className='col-lg-12 mb-3'>
             <label className='form-label'>
-              Desctipcion <span className='text-danger'>*</span>{' '}
+              Notas Extra <span className='text-danger'>*</span>{' '}
             </label>
             <textarea
               className={`${
-                errors.description && 'is-invalid'
+                errors.notes && 'is-invalid'
               } form-control `}
               rows={3}
               placeholder='Introduce notas adicionales'
               id='description'
-              {...register('description', {
+              {...register('notes', {
                 required: true,
                 validate: (value) => {
                   return !!value?.trim();
                 },
               })}
             />
-            {errors.description && (
+            {errors.notes && (
               <span className='invalid-feedback'>
                 Introduce este campo
               </span>

@@ -6,7 +6,7 @@ export interface Part {
   sku?: string;
   manufacturer: string;
   notes?: string;
-  image?: string;
+  imageURL?: string;
   updatedAt: string;
   fitsIn?: string[];
 }

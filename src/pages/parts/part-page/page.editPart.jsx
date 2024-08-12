@@ -4,23 +4,23 @@ import {
   useAppSelector,
 } from '../../../utils/hooks/useReduxDispatch';
 import { Link, useParams } from 'react-router-dom';
-import { getTruckById } from '../../../redux/actions/trucks.redux.actions';
-import TruckForm from '../../../components/forms/component.truckForm';
 import Spinner from '../../../components/common/component.spinner';
 import { timeAgo } from '../../../utils/helpers';
+import { getPartById } from '../../../redux/actions/parts.redux.actions';
+import PartForm from '../../../components/forms/component.partForm';
 
-const EditTruckPage = () => {
+const EditPartPage = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
 
   const { loading, error, dataItem } = useAppSelector(
-    (state) => state.trucks,
+    (state) => state.parts,
   );
   const isNewItem = !id;
 
   useEffect(() => {
     if (id && dataItem?.id !== id) {
-      dispatch(getTruckById(id));
+      dispatch(getPartById(id));
     }
   }, [dispatch, id, dataItem?.id]);
 
@@ -41,14 +41,17 @@ const EditTruckPage = () => {
       <div className='card mb-3'>
         {!isNewItem && dataItem && (
           <div className='card-header d-flex align-items-center justify-content-between'>
-            <h3 className='card-title'>{dataItem.displayName}</h3>
+            <h3 className='card-title'>{dataItem.partNumber}</h3>
             <p className='text-info'>
-              Actualizado: {timeAgo(dataItem.updatedAt)}
+              Actualizado:{' '}
+              {dataItem.updatedAt
+                ? timeAgo(dataItem.updatedAt)
+                : 'Nunca'}
             </p>
           </div>
         )}
         <div className='card-body'>
-          <TruckForm
+          <PartForm
             {...(!isNewItem &&
               dataItem && { defaultValues: dataItem })}
             isEditing={!isNewItem}
@@ -64,15 +67,17 @@ const EditTruckPage = () => {
         <div className='row g-2 align-items-center'>
           <div className='col'>
             <div className='d-flex align-items-center'>
-              <Link to={isNewItem ? '/trucks' : `/trucks/${id}`}>
+              <Link to={isNewItem ? '/parts' : `/parts/${id}`}>
                 <i className='fa-solid fa-arrow-left me-2' />
               </Link>
               <h2 className='page-title'>
-                {isNewItem ? 'Crear nuevo' : 'Editar camión'}
+                {isNewItem ? 'Nueva parte' : 'Editar Parte'}
               </h2>
             </div>
             <small>
-              Edita la información que se encuentra en el sistema.
+              Aquí puedes registrar una nueva parte para el
+              inventario. Los campos marcados con{' '}
+              <span className='text-danger'>*</span> son obligatorios.
             </small>
           </div>
         </div>
@@ -82,4 +87,4 @@ const EditTruckPage = () => {
   );
 };
 
-export default EditTruckPage;
+export default EditPartPage;

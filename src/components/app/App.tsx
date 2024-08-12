@@ -6,10 +6,10 @@ import HomePage from '../../pages/homePage/page.homePage';
 import TruckListPage from '../../pages/trucks/truck-list/page.truckList';
 import PartListPage from '../../pages/parts/part-list/page.partList';
 import MainPage from '../../pages/page.main';
-import PartForm from '../forms/component.partForm';
 import TruckDetailsPage from '../../pages/trucks/truck-page/page.truckDetails';
-import CreateTruckPage from '../../pages/trucks/truck-page/page.createTruck';
 import EditTruckPage from '../../pages/trucks/truck-page/page.editTruck';
+import PartDetailsPage from '../../pages/parts/part-page/page.partDetails';
+import EditPartPage from '../../pages/parts/part-page/page.editPart';
 
 function App() {
   return (
@@ -20,7 +20,9 @@ function App() {
             <Route index element={<HomePage />} />
             {/* Inventory */}
             <Route path='parts' element={<PartListPage />} />
-            <Route path='parts/create' element={<PartForm />} />
+            <Route path='parts/create' element={<EditPartPage />} />
+            <Route path='parts/:id' element={<PartDetailsPage />} />
+            <Route path='parts/edit/:id' element={<EditPartPage />} />
             <Route
               path='inventory'
               element={
@@ -35,10 +37,7 @@ function App() {
                 <div>tmaintenences Vacío, ir a partes o camiones</div>
               }
             />
-            <Route
-              path='trucks/create'
-              element={<CreateTruckPage />}
-            />
+            <Route path='trucks/create' element={<EditTruckPage />} />
             <Route path='trucks/:id' element={<TruckDetailsPage />} />
             <Route
               path='trucks/edit/:id'

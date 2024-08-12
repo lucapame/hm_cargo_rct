@@ -4,6 +4,8 @@ import {
   createPart,
   deletePart,
   getAllParts,
+  getPartById,
+  updatePart,
 } from '../actions/parts.redux.actions';
 import { Part } from '../../types/part.t';
 
@@ -47,16 +49,19 @@ const partsSlice = createSlice({
       state.dataItem = null;
       state.loading = true;
       state.error = null;
+      state.succsess = false;
     });
     builder.addCase(createPart.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.dataItem = payload;
+      state.succsess = true;
       state.succsess = true;
     });
     builder.addCase(createPart.rejected, (state, { payload }) => {
       state.dataItem = null;
       state.loading = false;
       state.error = payload;
+      state.succsess = false;
     });
 
     // deletePart
@@ -64,6 +69,7 @@ const partsSlice = createSlice({
       state.dataItem = null;
       state.loading = true;
       state.error = null;
+      state.succsess = false;
     });
     builder.addCase(deletePart.fulfilled, (state, { payload }) => {
       state.loading = false;
@@ -71,11 +77,13 @@ const partsSlice = createSlice({
         (item: Part) => item.id !== payload,
       );
       state.succsess = true;
+      state.error = null;
     });
     builder.addCase(deletePart.rejected, (state, { payload }) => {
       state.dataItem = null;
       state.loading = false;
       state.error = payload;
+      state.succsess = false;
     });
 
     // getAllParts
@@ -83,18 +91,63 @@ const partsSlice = createSlice({
       state.dataArray = [];
       state.loading = true;
       state.error = null;
+      state.succsess = false;
     });
 
     builder.addCase(getAllParts.fulfilled, (state, { payload }) => {
       state.loading = false;
       state.dataArray = payload;
       state.succsess = true;
+      state.error = null;
     });
 
     builder.addCase(getAllParts.rejected, (state, { payload }) => {
       state.dataArray = [];
       state.loading = false;
       state.error = payload;
+      state.succsess = false;
+    });
+
+    // getPartById
+    builder.addCase(getPartById.pending, (state) => {
+      state.dataItem = null;
+      state.loading = true;
+      state.error = null;
+      state.succsess = false;
+    });
+
+    builder.addCase(getPartById.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.dataItem = payload;
+      state.succsess = true;
+      state.error = null;
+    });
+
+    builder.addCase(getPartById.rejected, (state, { payload }) => {
+      state.dataItem = null;
+      state.loading = false;
+      state.error = payload;
+      state.succsess = false;
+    });
+
+    // updatePart
+    builder.addCase(updatePart.pending, (state) => {
+      state.dataItem = null;
+      state.loading = true;
+      state.error = null;
+      state.succsess = false;
+    });
+    builder.addCase(updatePart.fulfilled, (state, { payload }) => {
+      state.loading = false;
+      state.dataItem = payload;
+      state.succsess = true;
+      state.error = null;
+    });
+    builder.addCase(updatePart.rejected, (state, { payload }) => {
+      state.dataItem = null;
+      state.loading = false;
+      state.error = payload;
+      state.succsess = false;
     });
   },
 });

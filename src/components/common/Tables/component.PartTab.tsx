@@ -1,6 +1,5 @@
-import { deletePart } from '../../../redux/actions/parts.redux.actions';
+import { useNavigate } from 'react-router';
 import { Part } from '../../../types/part.t';
-import { useAppDispatch } from '../../../utils/hooks/useReduxDispatch';
 
 interface TableProps {
   data: Part[];
@@ -8,10 +7,8 @@ interface TableProps {
 }
 
 const PartTable: React.FC<TableProps> = ({ data, headers }) => {
-  const dispatch = useAppDispatch();
-  const handleDelete = (id: string) => {
-    dispatch(deletePart(id));
-  };
+  const navigate = useNavigate();
+
   return (
     <div className='card'>
       <div className='card-body border-bottom py-3'>
@@ -37,13 +34,15 @@ const PartTable: React.FC<TableProps> = ({ data, headers }) => {
               {headers.map((header) => {
                 return <th key={header}>{header}</th>;
               })}
-
-              <th></th>
             </tr>
           </thead>
           <tbody>
             {data.map((part, index) => (
-              <tr key={part.id}>
+              <tr
+                key={part.id}
+                onClick={() => navigate(`/parts/${part.id}`)}
+                className='selectable hover'
+              >
                 <td>
                   <input
                     className='form-check-input m-0 align-middle'
@@ -60,15 +59,6 @@ const PartTable: React.FC<TableProps> = ({ data, headers }) => {
                   ) : (
                     <small className='text-muted'>Sin SKU</small>
                   )}
-                </td>
-
-                <td className='text-end'>
-                  <button
-                    className='btn text-danger border-0'
-                    onClick={() => handleDelete(part.id)}
-                  >
-                    <i className='fas fa-trash-alt me-2' /> Eliminar
-                  </button>
                 </td>
               </tr>
             ))}

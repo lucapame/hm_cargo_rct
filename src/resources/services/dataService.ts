@@ -13,7 +13,14 @@ import {
   endAt,
   updateDoc,
 } from '@firebase/firestore';
-import { db } from '../firebase/firebase';
+import {
+  ref,
+  uploadBytesResumable,
+  getDownloadURL,
+  getMetadata,
+  deleteObject,
+} from 'firebase/storage';
+import { db, storage } from '../firebase/firebase';
 import { mapErrorCodeToMessage } from '../../utils/helpers';
 import { Query } from '../../types';
 
@@ -28,7 +35,6 @@ export async function createDocument<T>(
 ): Promise<any | null> {
   try {
     const docData = converter.toFireStore(data);
-
     const docRef = await addDoc(
       collection(db, collectionId),
       docData,
@@ -53,8 +59,23 @@ export async function deleteDocument(
 ): Promise<void> {
   try {
     await deleteDoc(doc(db, collectionId, documentId));
+
+    // delete files with this id
+    await deleteDocumentFiles(documentId);
   } catch (error: any) {
     console.error('Error deleting document:', error);
+    throw new Error(mapErrorCodeToMessage(error.code));
+  }
+}
+
+export async function deleteDocumentFiles(
+  documentId: string,
+): Promise<void> {
+  try {
+    const storageRef = ref(storage, documentId);
+    await deleteObject(storageRef);
+  } catch (error: any) {
+    console.error('Error deleting document files:', error);
     throw new Error(mapErrorCodeToMessage(error.code));
   }
 }

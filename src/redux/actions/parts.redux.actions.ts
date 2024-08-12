@@ -3,6 +3,8 @@ import {
   createDocument,
   deleteDocument,
   getAllDocuments,
+  getDocumentById,
+  updateDocument,
 } from '../../resources/services/dataService';
 import { partFirestoreConverter } from '../../utils/data.util';
 import { Part } from '../../types/part.t';
@@ -35,6 +37,23 @@ export const deletePart = createAsyncThunk(
   },
 );
 
+export const updatePart = createAsyncThunk(
+  'parts/update',
+  async (data: Part, { rejectWithValue }) => {
+    try {
+      await updateDocument(
+        'parts',
+        data.id,
+        data,
+        partFirestoreConverter,
+      );
+      return data;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
 export const getAllParts = createAsyncThunk(
   'parts/getAll',
   async (_, { rejectWithValue }) => {
@@ -44,6 +63,22 @@ export const getAllParts = createAsyncThunk(
         partFirestoreConverter,
       );
       return parts;
+    } catch (error: any) {
+      return rejectWithValue(error.message);
+    }
+  },
+);
+
+export const getPartById = createAsyncThunk(
+  'parts/getById',
+  async (id: string, { rejectWithValue }) => {
+    try {
+      const part = await getDocumentById<Part>(
+        'parts',
+        id,
+        partFirestoreConverter,
+      );
+      return part;
     } catch (error: any) {
       return rejectWithValue(error.message);
     }

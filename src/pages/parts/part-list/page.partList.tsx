@@ -21,9 +21,6 @@ function PartListPage() {
 
   return (
     <div>
-      <div className='container-xl my-4 p-3'>
-        <div className='row g-2 align-items-center'></div>
-      </div>
       <div className='container-xl my-4'>
         <div className='row g-2 align-items-center'>
           <div className='col'>
