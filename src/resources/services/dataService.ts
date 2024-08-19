@@ -21,14 +21,14 @@ import { Query } from '../../types';
 // Function to create a document in Firebase
 export async function createDocument<T>(
   collectionId: string,
-  data: any,
+  data: T,
   converter: {
-    toFireStore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
-    fromFireStore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
+    toFirestore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
+    fromFirestore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
   },
-): Promise<any | null> {
+): Promise<string | null> {
   try {
-    const docData = converter.toFireStore(data);
+    const docData = converter.toFirestore(data);
     const docRef = await addDoc(
       collection(db, collectionId),
       docData,
@@ -54,7 +54,7 @@ export async function deleteDocument(
   try {
     await deleteDoc(doc(db, collectionId, documentId));
 
-    // delete files with this id
+    // Delete files associated with this document ID
     await deleteDocumentFiles(documentId);
   } catch (error: any) {
     console.error('Error deleting document:', error);
@@ -77,14 +77,14 @@ export async function deleteDocumentFiles(
 export async function updateDocument<T>(
   collectionId: string,
   documentId: string,
-  data: any,
+  data: T,
   converter: {
-    toFireStore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
-    fromFireStore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
+    toFirestore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
+    fromFirestore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
   },
 ): Promise<void> {
   try {
-    const docData = converter.toFireStore(data);
+    const docData = converter.toFirestore(data);
 
     const docRef = doc(db, collectionId, documentId);
     await updateDoc(docRef, {
@@ -99,12 +99,12 @@ export async function updateDocument<T>(
 export async function getAllDocuments<T>(
   collectionId: string,
   converter: {
-    toFireStore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
-    fromFireStore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
+    toFirestore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
+    fromFirestore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
   },
   queries?: Query[],
 ): Promise<T[]> {
-  const queryConstraints = [] as any[];
+  const queryConstraints: any[] = [];
 
   if (queries) {
     queries.forEach((query: any) => {
@@ -134,6 +134,7 @@ export async function getAllDocuments<T>(
       }
     });
   }
+
   try {
     const q = query(
       collection(db, collectionId),
@@ -144,7 +145,7 @@ export async function getAllDocuments<T>(
 
     const documents: T[] = [];
     querySnapshot.forEach((doc) => {
-      documents.push(converter.fromFireStore(doc.id, doc.data()));
+      documents.push(converter.fromFirestore(doc.id, doc.data()));
     });
     return documents;
   } catch (error: any) {
@@ -157,8 +158,8 @@ export async function getDocumentById<T>(
   collectionId: string,
   documentId: string,
   converter: {
-    toFireStore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
-    fromFireStore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
+    toFirestore: (data: T) => any; // Modify 'any' to the appropriate Firestore data type
+    fromFirestore: (id: string, data: any) => T; // Modify 'any' to the appropriate Firestore data type
   },
 ): Promise<T> {
   try {
@@ -166,7 +167,7 @@ export async function getDocumentById<T>(
     const docSnap = await getDoc(docRef);
 
     if (docSnap.exists()) {
-      return converter.fromFireStore(docSnap.id, docSnap.data());
+      return converter.fromFirestore(docSnap.id, docSnap.data());
     } else {
       console.error('Document does not exist');
       throw new Error(

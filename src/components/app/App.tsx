@@ -10,6 +10,8 @@ import TruckDetailsPage from '../../pages/trucks/truck-page/page.truckDetails';
 import EditTruckPage from '../../pages/trucks/truck-page/page.editTruck';
 import PartDetailsPage from '../../pages/parts/part-page/page.partDetails';
 import EditPartPage from '../../pages/parts/part-page/page.editPart';
+import MaintenanceList from '../../pages/maintenance/maintenance-list/page.maintenance-list';
+import CreateMaintenance from '../../pages/maintenance/maintenance-page/page.createMaintenance';
 
 function App() {
   return (
@@ -31,17 +33,25 @@ function App() {
             />
             {/* Trucks */}
             <Route path='trucks' element={<TruckListPage />} />
-            <Route
-              path='maintenences'
-              element={
-                <div>tmaintenences Vacío, ir a partes o camiones</div>
-              }
-            />
             <Route path='trucks/create' element={<EditTruckPage />} />
             <Route path='trucks/:id' element={<TruckDetailsPage />} />
             <Route
               path='trucks/edit/:id'
               element={<EditTruckPage />}
+            />
+
+            {/* Maintenences */}
+            <Route
+              path='maintenences'
+              element={<MaintenanceList />}
+            />
+            <Route
+              path='maintenences/create'
+              element={<CreateMaintenance />}
+            />
+            <Route
+              path='maintenences/:id'
+              element={<MaintenanceList />}
             />
 
             {/* Files */}

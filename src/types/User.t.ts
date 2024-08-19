@@ -17,3 +17,9 @@ export interface UserProfile {
   phoneNumber?: string | null;
   photoURL: string | null;
 }
+
+export interface SimpleUser {
+  id: string;
+  displayName: string;
+  photoURL: string | null;
+}

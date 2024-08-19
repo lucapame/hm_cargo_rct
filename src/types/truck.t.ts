@@ -20,4 +20,5 @@ export interface Truck {
   notes?: string;
   updatedAt: string;
   isActive: boolean;
+  imageURL?: string;
 }

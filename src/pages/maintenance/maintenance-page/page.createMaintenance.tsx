@@ -1,0 +1,202 @@
+import React, { useEffect, useMemo } from 'react';
+import { useParams } from 'react-router';
+import {
+  useAppDispatch,
+  useAppSelector,
+} from '../../../utils/hooks/useReduxDispatch';
+import placeholderImage from '../../../assets/img/no-image.png';
+import Spinner from '../../../components/common/component.spinner';
+import { timeAgo } from '../../../utils/helpers';
+import MaintenanceForm from '../../../components/forms/component.maintenanceForm';
+import { Link, useSearchParams } from 'react-router-dom';
+import { getTruckById } from '../../../redux/actions/trucks.redux.actions';
+
+const CreateMaintenance = () => {
+  const { id } = useParams();
+  const dispatch = useAppDispatch();
+  const [searchParams] = useSearchParams();
+
+  const truckId: string = useMemo(() => {
+    if (searchParams.get('truckId'))
+      return searchParams.get('truckId')!;
+
+    return '';
+  }, [searchParams]);
+
+  // Selecting from the 'trucks' slice of the state
+  const {
+    loading: trucksLoading,
+    error: trucksError,
+    dataItem: trucksDataItem,
+  } = useAppSelector((state) => state.trucks);
+
+  // Selecting from the 'maintenance' slice of the state
+  const {
+    loading: maintenanceLoading,
+    error: maintenanceError,
+    dataItem: maintenanceDataItem,
+  } = useAppSelector((state) => state.maintenance);
+
+  const isNewItem = !id;
+
+  useEffect(() => {
+    //Get current maintenance
+    // if (id && dataItem?.id !== id) {
+    // dispatch(getTruckById(truckId));
+    //}
+
+    //Get truck by id
+    if (truckId && trucksDataItem?.id !== truckId) {
+      dispatch(getTruckById(truckId));
+    }
+  }, [dispatch, id, trucksDataItem?.id, truckId]);
+
+  const renderContent = () => {
+    if (maintenanceLoading) {
+      return (
+        <div className='text-center'>
+          <Spinner small />
+        </div>
+      );
+    }
+
+    if (maintenanceError) {
+      return (
+        <div className='alert alert-danger'>{maintenanceError}</div>
+      );
+    }
+
+    return (
+      <div className='card mb-3'>
+        {!isNewItem && maintenanceDataItem && (
+          <div className='card-header d-flex align-items-center justify-content-between'>
+            <h3 className='card-title'>
+              {maintenanceDataItem.displayName}
+            </h3>
+            <p className='text-info'>
+              Actualizado: {timeAgo(maintenanceDataItem.updatedAt)}
+            </p>
+          </div>
+        )}
+        <div className='card-body'>
+          <div className='row'>
+            <div className='col-12 col-md-3 col-lg-4'>
+              <div className='card'>
+                <div className='card-header'>
+                  <h5 className='card-title'>
+                    Detalles del vehículo
+                  </h5>
+                </div>
+                <div className='card-body'>
+                  <div className='row'>
+                    <div className='col-12'>
+                      <img
+                        src={
+                          trucksDataItem?.imageURL || placeholderImage
+                        }
+                        alt={trucksDataItem?.displayName}
+                        className='img-fluid img-thumbnail'
+                      />
+                    </div>
+
+                    <div className='col mt-2'>
+                      <div className='datagrid'>
+                        <div className='datagrid-item'>
+                          <div className='datagrid-title'>Nombre</div>
+                          <div className='datagrid-content'>
+                            {trucksDataItem?.displayName || '-'}
+                          </div>
+                        </div>
+                        <div className='datagrid-item'>
+                          <div className='datagrid-title'>
+                            VIN del vehiculo
+                          </div>
+                          <div className='datagrid-content'>
+                            {trucksDataItem?.vin || '-'}
+                          </div>
+                        </div>
+                        <div className='datagrid-item'>
+                          <div className='datagrid-title'>Placas</div>
+                          <div className='datagrid-content'>
+                            {trucksDataItem?.licensePlate || '-'}
+                          </div>
+                        </div>
+                        <div className='datagrid-item'>
+                          <div className='datagrid-title'>Año</div>
+                          <div className='datagrid-content'>
+                            {trucksDataItem?.year || '-'}
+                          </div>
+                        </div>
+                        <div className='datagrid-item'>
+                          <div className='datagrid-title'>
+                            Estado del vehiculo
+                          </div>
+                          <div className='datagrid-content'>
+                            <span
+                              className={`${
+                                trucksDataItem?.isActive
+                                  ? 'status-green'
+                                  : 'status-red'
+                              }
+                status `}
+                            >
+                              {trucksDataItem?.isActive
+                                ? 'En uso'
+                                : 'Inactivo'}
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div className='col'>
+              <MaintenanceForm
+                {...(!isNewItem &&
+                  maintenanceDataItem && {
+                    defaultValues: maintenanceDataItem,
+                  })}
+                isEditing={!isNewItem}
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  };
+
+  return (
+    <div>
+      <div className='my-4'>
+        <div className='row g-2 align-items-center'>
+          <div className='col'>
+            <div className='d-flex align-items-center'>
+              <Link
+                to={
+                  isNewItem ? '/maintenences' : `/maintenences/${id}`
+                }
+              >
+                <i className='fa-solid fa-arrow-left me-2' />
+              </Link>
+              <h2 className='page-title'>
+                {isNewItem
+                  ? 'Nuevo veículo a mantenimiento'
+                  : 'Editar detalles de manteniminento'}
+              </h2>
+            </div>
+            <small>
+              {isNewItem
+                ? 'Agrega un nuevo veículo a mantenimiento'
+                : 'Edita los detalles de mantenimiento'}
+            </small>
+          </div>
+        </div>
+      </div>
+      {renderContent()}
+    </div>
+  );
+};
+
+export default CreateMaintenance;

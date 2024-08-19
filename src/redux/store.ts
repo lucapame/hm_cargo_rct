@@ -2,12 +2,14 @@ import { configureStore } from '@reduxjs/toolkit';
 import authReduxSlice from './slices/auth.redux.slice';
 import trucksReduxSlice from './slices/truck.redix.slice';
 import partsReduxSlice from './slices/parts.redux.slice';
+import maintenance from './slices/maintenances.redux.slice';
 
 export const store = configureStore({
   reducer: {
     auth: authReduxSlice,
     trucks: trucksReduxSlice,
     parts: partsReduxSlice,
+    maintenance: maintenance,
   },
 });
 

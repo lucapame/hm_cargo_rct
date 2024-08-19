@@ -13,7 +13,7 @@ export interface TruckInititialState {
   searchLoading: boolean;
   dataArray: any[];
   searchResults: any[];
-  dataItem: Truck | null;
+  dataItem: any;
   error: any;
   succsess: boolean;
 }

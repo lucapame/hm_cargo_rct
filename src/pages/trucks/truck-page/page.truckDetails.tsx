@@ -4,12 +4,15 @@ import {
   useAppSelector,
 } from '../../../utils/hooks/useReduxDispatch';
 import { Link, useParams } from 'react-router-dom';
+import placeholderImage from '../../../assets/img/no-image.png';
 import {
   deleteTruck,
   getTruckById,
+  updateTruck,
 } from '../../../redux/actions/trucks.redux.actions';
 import { timeAgo } from '../../../utils/helpers';
 import Spinner from '../../../components/common/component.spinner';
+import UploadeFileButton from '../../../components/common/Inputs/imageUpladerButton';
 
 const TruckDetailsPage = () => {
   const { loading, error, dataItem } = useAppSelector(
@@ -33,7 +36,7 @@ const TruckDetailsPage = () => {
       {!loading && (
         <div className=' my-4'>
           <div className='row g-2 align-items-center'>
-            <div className='col'>
+            <div className='col-12 col-md-auto'>
               <div className='d-flex align-items-center'>
                 <Link className='' to='/trucks'>
                   <i className='fa-solid fa-arrow-left me-2' />
@@ -48,7 +51,7 @@ const TruckDetailsPage = () => {
             </div>
 
             <div className='col'>
-              <div className='d-flex justify-content-end'>
+              <div className='d-flex justify-content-md-end mt-md-0 mt-2'>
                 <Link
                   to={`/trucks/edit/${id}`}
                   className='btn btn-primary'
@@ -64,6 +67,14 @@ const TruckDetailsPage = () => {
                   <i className='fa-solid fa-trash me-2' />
                   Eliminar
                 </button>
+
+                <Link
+                  to={`/maintenences/create?truckId=${id}`}
+                  className='btn btn-purple ms-2'
+                >
+                  <i className='fa-solid fa-screwdriver-wrench me-2' />
+                  Mantenimiento
+                </Link>
               </div>
             </div>
           </div>
@@ -71,120 +82,149 @@ const TruckDetailsPage = () => {
       )}
 
       {!loading && dataItem && (
-        <div className='card'>
-          <div className='card-header'>
-            <h3 className='card-title'>Información General</h3>
+        <div className='row'>
+          <div className='col-md-4 col-lg-3'>
+            <div className='card'>
+              <div className='card-header'>
+                <h3 className='card-title'>Imagen</h3>
+              </div>
+              <div className='card-body'>
+                <img
+                  src={dataItem?.imageURL || placeholderImage}
+                  alt={dataItem?.displayName}
+                  className='img-fluid'
+                />
+              </div>
+              <div className='card-footer'>
+                <UploadeFileButton
+                  fileLocation='trucks-images'
+                  filedefaultName={dataItem?.id + '-0' || 'no-truck'}
+                  onUploadeDone={(imageURL) =>
+                    dispatch(updateTruck({ ...dataItem, imageURL }))
+                  }
+                />
+              </div>
+            </div>
           </div>
-          <div className='card-body'>
-            <div className='datagrid'>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>VIN del vehiculo</div>
-                <div className='datagrid-content'>
-                  {dataItem?.vin || '-'}
-                </div>
+          <div className='col'>
+            <div className='card'>
+              <div className='card-header'>
+                <h3 className='card-title'>Información General</h3>
               </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>Placas</div>
-                <div className='datagrid-content'>
-                  {dataItem?.licensePlate || '-'}
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>Marca</div>
-                <div className='datagrid-content'>
-                  {dataItem?.make || '-'}
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>Modelo</div>
-                <div className='datagrid-content'>
-                  {dataItem?.model || '-'}
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>Año</div>
-                <div className='datagrid-content'>
-                  {dataItem?.year || '-'}
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>
-                  Estado del vehiculo
-                </div>
-                <div className='datagrid-content'>
-                  <span
-                    className={`${
-                      dataItem?.isActive
-                        ? 'status-green'
-                        : 'status-red'
-                    }
-                status `}
-                  >
-                    {dataItem?.isActive ? 'En uso' : 'Inactivo'}
-                  </span>
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>
-                  Fecha de expiración (Placas)
-                </div>
-                <div className='datagrid-content'>
-                  {' '}
-                  {dataItem?.licensePlateExpiration || '-'}
-                </div>
-              </div>
-
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>
-                  Fecha de expiración (Seguro)
-                </div>
-                <div className='datagrid-content'>
-                  {' '}
-                  {dataItem?.licensePlateExpiration || '-'}
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>
-                  Motor en el vehiculo
-                </div>
-                <div className='datagrid-content'>
-                  <div className='d-flex align-items-center'>
-                    <div className='me-2'>
-                      {dataItem?.motor || '-'}
+              <div className='card-body'>
+                <div className='datagrid'>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      VIN del vehiculo
                     </div>
-                    <div className='badge bg-green'>Motor</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.vin || '-'}
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>
-                  Numero de serie del motor
-                </div>
-                <div className='datagrid-content'>
-                  {dataItem?.motorSerialNumber || '-'}
-                </div>
-              </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Placas</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.licensePlate || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Marca</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.make || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Modelo</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.model || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Año</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.year || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      Estado del vehiculo
+                    </div>
+                    <div className='datagrid-content'>
+                      <span
+                        className={`${
+                          dataItem?.isActive
+                            ? 'status-green'
+                            : 'status-red'
+                        }
+                status `}
+                      >
+                        {dataItem?.isActive ? 'En uso' : 'Inactivo'}
+                      </span>
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      Fecha de expiración (Placas)
+                    </div>
+                    <div className='datagrid-content'>
+                      {' '}
+                      {dataItem?.licensePlateExpiration || '-'}
+                    </div>
+                  </div>
 
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>Trasmisión</div>
-                <div className='datagrid-content'>
-                  {dataItem?.transmission || '-'}
-                </div>
-              </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      Fecha de expiración (Seguro)
+                    </div>
+                    <div className='datagrid-content'>
+                      {' '}
+                      {dataItem?.licensePlateExpiration || '-'}
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      Motor en el vehiculo
+                    </div>
+                    <div className='datagrid-content'>
+                      <div className='d-flex align-items-center'>
+                        <div className='me-2'>
+                          {dataItem?.motor || '-'}
+                        </div>
+                        <div className='badge bg-green'>Motor</div>
+                      </div>
+                    </div>
+                  </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      Numero de serie del motor
+                    </div>
+                    <div className='datagrid-content'>
+                      {dataItem?.motorSerialNumber || '-'}
+                    </div>
+                  </div>
 
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>
-                  Ultima Actualización
-                </div>
-                <div className='datagrid-content text-info'>
-                  {timeAgo(dataItem?.updatedAt)}
-                </div>
-              </div>
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Trasmisión</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.transmission || '-'}
+                    </div>
+                  </div>
 
-              <div className='datagrid-item'>
-                <div className='datagrid-title'>Notas</div>
-                <div className='datagrid-content'>
-                  {dataItem?.notes || '-'}
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>
+                      Ultima Actualización
+                    </div>
+                    <div className='datagrid-content text-info'>
+                      {timeAgo(dataItem?.updatedAt)}
+                    </div>
+                  </div>
+
+                  <div className='datagrid-item'>
+                    <div className='datagrid-title'>Notas</div>
+                    <div className='datagrid-content'>
+                      {dataItem?.notes || '-'}
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
