@@ -164,7 +164,8 @@ const MaintenanceForm = ({
             </div>
           </div>
 
-          <label className='h3 my-4'>Detalles Adicionales</label>
+          <label className='h3 my-4'>{maintenceCompleted}</label>
+          {maintenceCompleted && (
           <div className='row'>
             <div className='col-lg-6'>
               <label className='form-label'>
@@ -213,7 +214,7 @@ const MaintenanceForm = ({
                 </span>
               )}
             </div>
-            {maintenceCompleted && (
+       
               <div className='col-lg-4 mt-2'>
                 <label className='form-label'>Costo (USD)</label>
                 <input
@@ -227,8 +228,9 @@ const MaintenanceForm = ({
                   </span>
                 )}
               </div>
-            )}
+   
           </div>
+          )}
           {error && !loading && (
             <div className='alert alert-danger my-4' role='alert'>
               {error}
