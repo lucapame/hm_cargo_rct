@@ -50,8 +50,8 @@ function App() {
               element={<CreateMaintenance />}
             />
             <Route
-              path='maintenences/:id'
-              element={<MaintenanceList />}
+              path='maintenences/details/:id'
+              element={<CreateMaintenance />}
             />
 
             {/* Files */}

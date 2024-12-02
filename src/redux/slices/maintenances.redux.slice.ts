@@ -1,12 +1,18 @@
 import { createSlice } from '@reduxjs/toolkit';
 import { Maintenance } from '../../types/maintenece';
-import { createMaintenance } from '../actions/maintenance.actions';
+import {
+  createMaintenance,
+  getAllMaintenances,
+  getAllMaintenancesByQuery,
+  getMaintenanceById,
+} from '../actions/maintenance.actions';
 
 export interface MaintenanceInititialState {
   loading: boolean;
   searchLoading: boolean;
   dataArray: any[];
   searchResults: any[];
+  seraachError: any;
   activeMaintenanceList: any[];
   dataItem: any;
   error: any;
@@ -20,6 +26,7 @@ const initialState: MaintenanceInititialState = {
   searchResults: [],
   activeMaintenanceList: [],
   dataItem: null,
+  seraachError: null,
   error: null,
   succsess: false,
 };
@@ -64,6 +71,78 @@ const maintenancesSlice = createSlice({
         state.dataItem = null;
         state.loading = false;
         state.error = payload;
+        state.succsess = false;
+      },
+    );
+
+    // Get all maintenances
+    builder.addCase(getAllMaintenances.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.succsess = false;
+    });
+
+    builder.addCase(
+      getAllMaintenances.fulfilled,
+      (state, { payload }) => {
+        state.loading = false;
+        state.dataArray = payload;
+        state.succsess = true;
+      },
+    );
+
+    builder.addCase(
+      getAllMaintenances.rejected,
+      (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+        state.succsess = false;
+      },
+    );
+
+    //get maintenance by id
+    builder.addCase(getMaintenanceById.pending, (state) => {
+      state.loading = true;
+      state.error = null;
+      state.dataItem = null;
+    });
+
+    builder.addCase(
+      getMaintenanceById.fulfilled,
+      (state, { payload }) => {
+        state.loading = false;
+        state.dataItem = payload;
+        state.error = null;
+      },
+    );
+
+    builder.addCase(
+      getMaintenanceById.rejected,
+      (state, { payload }) => {
+        state.loading = false;
+        state.error = payload;
+      },
+    );
+
+    //Get all maintenances by query
+    builder.addCase(getAllMaintenancesByQuery.pending, (state) => {
+      state.searchLoading = true;
+      state.seraachError = null;
+    });
+
+    builder.addCase(
+      getAllMaintenancesByQuery.fulfilled,
+      (state, { payload }) => {
+        state.searchLoading = false;
+        state.searchResults = payload;
+      },
+    );
+
+    builder.addCase(
+      getAllMaintenancesByQuery.rejected,
+      (state, { payload }) => {
+        state.searchLoading = false;
+        state.seraachError = payload;
       },
     );
   },

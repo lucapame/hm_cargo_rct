@@ -6,7 +6,6 @@ import {
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 import { Maintenance } from '../../types/maintenece';
-import UserSelectInput from '../common/Inputs/component.userSelect';
 import { SimpleUser } from '../../types';
 import { Link } from 'react-router-dom';
 import Spinner from '../common/component.spinner';
@@ -15,9 +14,11 @@ import { createMaintenance } from '../../redux/actions/maintenance.actions';
 const MaintenanceForm = ({
   defaultValues,
   isEditing = false,
+  currentTruckDetails,
 }: {
   defaultValues?: Maintenance;
   isEditing?: boolean;
+  currentTruckDetails: any;
 }) => {
   const { loading, error, succsess } = useAppSelector(
     (state) => state.maintenance,
@@ -35,8 +36,10 @@ const MaintenanceForm = ({
     formState: { errors },
     getValues,
   } = useForm({
-    defaultValues: defaultValues,
+    defaultValues: { ...defaultValues },
   });
+
+  console.log(currentTruckDetails);
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -47,13 +50,21 @@ const MaintenanceForm = ({
       //navigate('/maintenences/' + defaultValues?.id);
       return;
     }
-
-    await dispatch(createMaintenance(data));
+    console.log('data', data);
+    if (currentTruckDetails) {
+      await dispatch(
+        createMaintenance({
+          ...data,
+          performedBy: performedUser,
+          truckId: currentTruckDetails?.id || '',
+          truckDisplayName: currentTruckDetails?.displayName || '',
+          truckImageURL: currentTruckDetails?.imageURL || '',
+        }),
+      );
+    }
     if (succsess && !error) {
       navigate('/maintenences');
     }
-
-    console.log(data);
   };
 
   return (
@@ -92,6 +103,7 @@ const MaintenanceForm = ({
               <input
                 type='date'
                 className='form-control'
+                defaultValue={new Date().toISOString().split('T')[0]}
                 {...register('date', { required: true })}
               />
               {errors.date && (
@@ -166,55 +178,57 @@ const MaintenanceForm = ({
 
           <label className='h3 my-4'>{maintenceCompleted}</label>
           {maintenceCompleted && (
-          <div className='row'>
-            <div className='col-lg-6'>
-              <label className='form-label'>
-                Próximo mantenimiento
-              </label>
-              <input
-                type='date'
-                className='form-control'
-                {...register('nextMaintenanceDate', {
-                  required: false,
-                })}
-              />
-              {errors.nextMaintenanceDate && (
-                <span className='invalid-feedback'>
-                  Error en este campo
-                </span>
-              )}
-            </div>
-            <div className='col-lg-6'>
-              <label className='form-label'>
-                Millas para el próximo mantenimiento
-              </label>
-              <input
-                type='number'
-                className='form-control'
-                {...register('nextMaintenanceMileage', {
-                  required: false,
-                })}
-              />
-              {errors.nextMaintenanceMileage && (
-                <span className='invalid-feedback'>
-                  Error en este campo
-                </span>
-              )}
-            </div>
+            <div className='row'>
+              <div className='col-lg-6'>
+                <label className='form-label'>
+                  Próximo mantenimiento
+                </label>
+                <input
+                  type='date'
+                  className='form-control'
+                  {...register('nextMaintenanceDate', {
+                    required: false,
+                  })}
+                />
+                {errors.nextMaintenanceDate && (
+                  <span className='invalid-feedback'>
+                    Error en este campo
+                  </span>
+                )}
+              </div>
+              <div className='col-lg-6'>
+                <label className='form-label'>
+                  Millas para el próximo mantenimiento
+                </label>
+                <input
+                  type='number'
+                  className='form-control'
+                  {...register('nextMaintenanceMileage', {
+                    required: false,
+                  })}
+                />
+                {errors.nextMaintenanceMileage && (
+                  <span className='invalid-feedback'>
+                    Error en este campo
+                  </span>
+                )}
+              </div>
 
-            <div className='col-lg-12 mt-2'>
-              <label className='form-label'>Notas Adicionales</label>
-              <textarea
-                className='form-control'
-                {...register('remarks', { required: false })}
-              />
-              {errors.notesList && (
-                <span className='invalid-feedback'>
-                  Error en este campo
-                </span>
-              )}
-            </div>
-       
+              <div className='col-lg-12 mt-2'>
+                <label className='form-label'>
+                  Notas Adicionales
+                </label>
+                <textarea
+                  className='form-control'
+                  {...register('remarks', { required: false })}
+                />
+                {errors.notesList && (
+                  <span className='invalid-feedback'>
+                    Error en este campo
+                  </span>
+                )}
+              </div>
+
               <div className='col-lg-4 mt-2'>
                 <label className='form-label'>Costo (USD)</label>
                 <input
@@ -228,8 +242,7 @@ const MaintenanceForm = ({
                   </span>
                 )}
               </div>
-   
-          </div>
+            </div>
           )}
           {error && !loading && (
             <div className='alert alert-danger my-4' role='alert'>
@@ -240,7 +253,7 @@ const MaintenanceForm = ({
             {!loading && (
               <Link
                 className='btn btn-secondary text-white mx-2'
-                to={'/maintenance'}
+                to={'/maintenences'}
               >
                 Cancelar
               </Link>

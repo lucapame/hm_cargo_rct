@@ -10,18 +10,16 @@ import { timeAgo } from '../../../utils/helpers';
 import MaintenanceForm from '../../../components/forms/component.maintenanceForm';
 import { Link, useSearchParams } from 'react-router-dom';
 import { getTruckById } from '../../../redux/actions/trucks.redux.actions';
+import { getMaintenanceById } from '../../../redux/actions/maintenance.actions';
 
 const CreateMaintenance = () => {
   const { id } = useParams();
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 
-  const truckId: string = useMemo(() => {
-    if (searchParams.get('truckId'))
-      return searchParams.get('truckId')!;
-
-    return '';
-  }, [searchParams]);
+  const { loading, error, dataItem } = useAppSelector(
+    (state) => state.maintenance,
+  );
 
   // Selecting from the 'trucks' slice of the state
   const {
@@ -39,14 +37,21 @@ const CreateMaintenance = () => {
 
   const isNewItem = !id;
 
+  const truckId: string = useMemo(() => {
+    if (searchParams.get('truckId'))
+      return searchParams.get('truckId')!;
+    if (!isNewItem && dataItem) return dataItem.truckId;
+    return '';
+  }, [dataItem, isNewItem, searchParams]);
+
   useEffect(() => {
     //Get current maintenance
-    // if (id && dataItem?.id !== id) {
-    // dispatch(getTruckById(truckId));
-    //}
+    if (id && dataItem?.id !== id) {
+      dispatch(getMaintenanceById(id));
+    }
 
     //Get truck by id
-    if (truckId && trucksDataItem?.id !== truckId) {
+    if (truckId && !trucksError && trucksDataItem?.id !== truckId) {
       dispatch(getTruckById(truckId));
     }
   }, [dispatch, id, trucksDataItem?.id, truckId]);
@@ -88,67 +93,86 @@ const CreateMaintenance = () => {
                   </h5>
                 </div>
                 <div className='card-body'>
-                  <div className='row'>
-                    <div className='col-12'>
-                      <img
-                        src={
-                          trucksDataItem?.imageURL || placeholderImage
-                        }
-                        alt={trucksDataItem?.displayName}
-                        className='img-fluid img-thumbnail'
-                      />
+                  {trucksLoading && (
+                    <div className='text-center'>
+                      <Spinner small />
                     </div>
+                  )}
 
-                    <div className='col mt-2'>
-                      <div className='datagrid'>
-                        <div className='datagrid-item'>
-                          <div className='datagrid-title'>Nombre</div>
-                          <div className='datagrid-content'>
-                            {trucksDataItem?.displayName || '-'}
+                  {trucksError && (
+                    <div className='alert alert-danger'>
+                      {trucksError}
+                    </div>
+                  )}
+
+                  {trucksDataItem && (
+                    <div className='row'>
+                      <div className='col-12'>
+                        <img
+                          src={
+                            trucksDataItem?.imageURL ||
+                            placeholderImage
+                          }
+                          alt={trucksDataItem?.displayName}
+                          className='img-fluid img-thumbnail'
+                        />
+                      </div>
+
+                      <div className='col mt-2'>
+                        <div className='datagrid'>
+                          <div className='datagrid-item'>
+                            <div className='datagrid-title'>
+                              Nombre
+                            </div>
+                            <div className='datagrid-content'>
+                              {trucksDataItem?.displayName || '-'}
+                            </div>
                           </div>
-                        </div>
-                        <div className='datagrid-item'>
-                          <div className='datagrid-title'>
-                            VIN del vehiculo
+                          <div className='datagrid-item'>
+                            <div className='datagrid-title'>
+                              VIN del vehiculo
+                            </div>
+                            <div className='datagrid-content'>
+                              {trucksDataItem?.vin || '-'}
+                            </div>
                           </div>
-                          <div className='datagrid-content'>
-                            {trucksDataItem?.vin || '-'}
+                          <div className='datagrid-item'>
+                            <div className='datagrid-title'>
+                              Placas
+                            </div>
+                            <div className='datagrid-content'>
+                              {trucksDataItem?.licensePlate || '-'}
+                            </div>
                           </div>
-                        </div>
-                        <div className='datagrid-item'>
-                          <div className='datagrid-title'>Placas</div>
-                          <div className='datagrid-content'>
-                            {trucksDataItem?.licensePlate || '-'}
+                          <div className='datagrid-item'>
+                            <div className='datagrid-title'>Año</div>
+                            <div className='datagrid-content'>
+                              {trucksDataItem?.year || '-'}
+                            </div>
                           </div>
-                        </div>
-                        <div className='datagrid-item'>
-                          <div className='datagrid-title'>Año</div>
-                          <div className='datagrid-content'>
-                            {trucksDataItem?.year || '-'}
-                          </div>
-                        </div>
-                        <div className='datagrid-item'>
-                          <div className='datagrid-title'>
-                            Estado del vehiculo
-                          </div>
-                          <div className='datagrid-content'>
-                            <span
-                              className={`${
-                                trucksDataItem?.isActive
-                                  ? 'status-green'
-                                  : 'status-red'
-                              }
-                status `}
-                            >
-                              {trucksDataItem?.isActive
-                                ? 'En uso'
-                                : 'Inactivo'}
-                            </span>
+                          <div className='datagrid-item'>
+                            <div className='datagrid-title'>
+                              Estado del vehiculo
+                            </div>
+                            <div className='datagrid-content'>
+                              <span
+                                className={`${
+                                  trucksDataItem?.isActive
+                                    ? 'status-green'
+                                    : 'status-red'
+                                }
+                   status `}
+                              >
+                                {trucksDataItem?.isActive
+                                  ? 'En uso'
+                                  : 'Inactivo'}
+                              </span>
+                            </div>
                           </div>
                         </div>
                       </div>
                     </div>
-                  </div>
+                  )}
                 </div>
               </div>
             </div>
@@ -159,6 +183,7 @@ const CreateMaintenance = () => {
                     defaultValues: maintenanceDataItem,
                   })}
                 isEditing={!isNewItem}
+                currentTruckDetails={trucksDataItem || null}
               />
             </div>
           </div>
@@ -174,9 +199,7 @@ const CreateMaintenance = () => {
           <div className='col'>
             <div className='d-flex align-items-center'>
               <Link
-                to={
-                  isNewItem ? '/maintenences' : `/maintenences/${id}`
-                }
+                to={isNewItem ? '/maintenences' : `/maintenences`}
               >
                 <i className='fa-solid fa-arrow-left me-2' />
               </Link>

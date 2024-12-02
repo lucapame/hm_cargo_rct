@@ -1,17 +1,15 @@
+import { SimpleUser } from './User.t';
+
 export interface Maintenance {
   id: string;
   type: string;
   description: string;
   remarks?: string;
-  performedBy: {
-    id: string;
-    displayName: string;
-  };
-  authorizedBy: {
-    id: string;
-    name: string;
-  };
-  vehicleId: string;
+  performedBy?: SimpleUser | null;
+  authorizedBy?: SimpleUser | null;
+  truckId: string;
+  truckDisplayName: string;
+  truckImageURL: string;
   date: string;
   mileage: number;
   cost: number;
