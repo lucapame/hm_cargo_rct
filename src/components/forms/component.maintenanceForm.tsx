@@ -5,11 +5,15 @@ import {
 } from '../../utils/hooks/useReduxDispatch';
 import { useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
-import { Maintenance } from '../../types/maintenece';
+import {
+  Maintenance,
+  MaintenanceStatus,
+  maintenaceTypeOptions,
+} from '../../types/maintenece';
 import { SimpleUser } from '../../types';
 import { Link } from 'react-router-dom';
 import Spinner from '../common/component.spinner';
-import { createMaintenance } from '../../redux/actions/maintenance.actions';
+import { createMaintenance, updateMaintenance } from '../../redux/actions/maintenance.actions';
 
 const MaintenanceForm = ({
   defaultValues,
@@ -24,7 +28,7 @@ const MaintenanceForm = ({
     (state) => state.maintenance,
   );
 
-  const [performedUser, setPerformedUser] =
+  const [performedUser] =
     React.useState<SimpleUser | null>(null);
 
   const [maintenceCompleted, setMaintenanceCompleted] =
@@ -34,7 +38,6 @@ const MaintenanceForm = ({
     register,
     handleSubmit,
     formState: { errors },
-    getValues,
   } = useForm({
     defaultValues: { ...defaultValues },
   });
@@ -46,8 +49,8 @@ const MaintenanceForm = ({
 
   const onSubmit = async (data: any) => {
     if (isEditing) {
-      //dispatch(updateMaintenace({ ...data, id: defaultValues?.id }));
-      //navigate('/maintenences/' + defaultValues?.id);
+      dispatch(updateMaintenance({ ...data, id: defaultValues?.id }));
+      navigate('/maintenences');
       return;
     }
     console.log('data', data);
@@ -85,12 +88,11 @@ const MaintenanceForm = ({
                 className='form-select'
                 {...register('type', { required: true })}
               >
-                <option value='interm'>
-                  Mantenimiento intermedio
-                </option>
-                <option value='major'>Mantenimiento mayor</option>
-                <option value='minor'>Mantenimiento menor</option>
-                <option value='repair'> Reparación</option>
+                {maintenaceTypeOptions.map((item) => (
+                  <option key={item.value} value={item.value}>
+                    {item.label}
+                  </option>
+                ))}
               </select>
               {errors.type && (
                 <span className='invalid-feedback'>
@@ -156,9 +158,18 @@ const MaintenanceForm = ({
                   }
                 }}
               >
-                <option value='pending'>Pendiente</option>
-                <option value='completed'>Completado</option>
-                <option value='in-progress'>En progreso</option>
+                <option value={MaintenanceStatus.PENDING}>
+                  Pendiente
+                </option>
+                <option value={MaintenanceStatus.COMPLETED}>
+                  Completado
+                </option>
+                <option value={MaintenanceStatus.IN_PROGRESS}>
+                  En progreso
+                </option>
+                <option value={MaintenanceStatus.CANCELED}>
+                  Cancelado
+                </option>
               </select>
             </div>
 

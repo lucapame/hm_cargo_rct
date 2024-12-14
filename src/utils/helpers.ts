@@ -1,3 +1,5 @@
+import { MaintenanceStatus } from '../types/maintenece';
+
 export const getFirstName = (name?: string | null) => {
   if (name) {
     return name.split(' ')[0];
@@ -143,4 +145,39 @@ export const timeAgo = (dateParam: any) => {
   }
 
   return getFormattedDate(date); // 10. January 2017. 10:20
+};
+
+export const getStatusBadgeClass = (
+  status: MaintenanceStatus,
+  type: 'pill' | 'badge' = 'badge' // Default to 'badge' if not provided
+): string => {
+  const baseClass = type === 'pill' ? 'badge rounded-pill' : 'badge';
+
+  switch (status) {
+    case MaintenanceStatus.PENDING:
+      return `${baseClass} bg-warning`;
+    case MaintenanceStatus.IN_PROGRESS:
+      return `${baseClass} bg-info`;
+    case MaintenanceStatus.COMPLETED:
+      return `${baseClass} bg-success`;
+    case MaintenanceStatus.CANCELED:
+      return `${baseClass} bg-danger`;
+    default:
+      return `${baseClass} bg-secondary`;
+  }
+};
+
+export const getStatusBadgeText = (status: MaintenanceStatus) => {
+  switch (status) {
+    case MaintenanceStatus.PENDING:
+      return 'Pendiente';
+    case MaintenanceStatus.IN_PROGRESS:
+      return 'En proceso';
+    case MaintenanceStatus.COMPLETED:
+      return 'Completado';
+    case MaintenanceStatus.CANCELED:
+      return 'Cancelado';
+    default:
+      return 'Desconocido';
+  }
 };

@@ -17,7 +17,7 @@ const CreateMaintenance = () => {
   const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
 
-  const { loading, error, dataItem } = useAppSelector(
+  const { error, dataItem } = useAppSelector(
     (state) => state.maintenance,
   );
 
@@ -54,6 +54,7 @@ const CreateMaintenance = () => {
     if (truckId && !trucksError && trucksDataItem?.id !== truckId) {
       dispatch(getTruckById(truckId));
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [dispatch, id, trucksDataItem?.id, truckId]);
 
   const renderContent = () => {
@@ -85,7 +86,7 @@ const CreateMaintenance = () => {
         )}
         <div className='card-body'>
           <div className='row'>
-            <div className='col-12 col-md-3 col-lg-4'>
+            <div className='col-12 col-md-3'>
               <div className='card'>
                 <div className='card-header'>
                   <h5 className='card-title'>
@@ -185,6 +186,9 @@ const CreateMaintenance = () => {
                 isEditing={!isNewItem}
                 currentTruckDetails={trucksDataItem || null}
               />
+              {error && (
+                <div className='alert alert-danger'>{error}</div>
+              )}
             </div>
           </div>
         </div>

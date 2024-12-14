@@ -7,8 +7,16 @@ import { getAllMaintenancesByQuery } from '../../redux/actions/maintenance.actio
 import { OrderByQuery, WhereQuery } from '../../types';
 import Spinner from '../common/component.spinner';
 import { Link } from 'react-router-dom';
-import { Maintenance } from '../../types/maintenece';
+import {
+  maintenaceTypeOptions,
+  Maintenance,
+  MaintenanceStatus,
+} from '../../types/maintenece';
 import placeholderImage from '../../assets/img/no-image.png';
+import {
+  getStatusBadgeClass,
+  getStatusBadgeText,
+} from '../../utils/helpers';
 
 const PnedingMaintenancesComponent = ({
   truckId,
@@ -19,7 +27,7 @@ const PnedingMaintenancesComponent = ({
   onlyPending?: boolean;
   ahowAsTable?: boolean;
 }) => {
-  const { searchLoading, seraachError, searchResults } =
+  const { loading, searchLoading, seraachError, searchResults } =
     useAppSelector((state) => state.maintenance);
 
   const dispatch = useAppDispatch();
@@ -32,7 +40,11 @@ const PnedingMaintenancesComponent = ({
           new OrderByQuery('date', 'desc'),
           ...([
             onlyPending
-              ? new WhereQuery('status', '==', 'pending')
+              ? new WhereQuery(
+                  'status',
+                  '==',
+                  MaintenanceStatus.PENDING,
+                )
               : null,
           ].filter((q) => q) as WhereQuery[]),
         ]),
@@ -43,7 +55,11 @@ const PnedingMaintenancesComponent = ({
           new OrderByQuery('date', 'desc'),
           ...([
             onlyPending
-              ? new WhereQuery('status', '==', 'pending')
+              ? new WhereQuery(
+                  'status',
+                  '==',
+                  MaintenanceStatus.PENDING,
+                )
               : null,
           ].filter((q) => q) as WhereQuery[]),
         ]),
@@ -87,9 +103,9 @@ const PnedingMaintenancesComponent = ({
             <div
               className='card'
               key={item.id}
-              style={{ minWidth: '300px' }}
+              style={{ minWidth: '250px' }}
             >
-              <div className='card-body p-4 text-center'>
+              <div className='card-body p-2 text-center'>
                 <img
                   src={item?.truckImageURL || placeholderImage}
                   alt={item?.truckDisplayName}
@@ -104,26 +120,27 @@ const PnedingMaintenancesComponent = ({
                     {item.truckDisplayName}
                   </Link>
                 </h3>
+                <p className='text-secondary fw-bold'>
+                  {maintenaceTypeOptions.find(
+                    (option) => option.value === item.type,
+                  )?.label || 'Tipo desconocido'}
+                </p>
+
+                <div className='mt-1'>
+                  <span className={getStatusBadgeClass(item.status)}>
+                    {getStatusBadgeText(item.status)}
+                  </span>
+                </div>
+
                 <div className='text-secondary'>
                   Ingresado el {item.date}
                 </div>
-                <div className='mt-3'>
-                  <span
-                    className={
-                      item.status === 'pending'
-                        ? 'badge bg-warning'
-                        : item.status === 'completed'
-                        ? 'badge bg-success'
-                        : 'badge bg-info'
-                    }
-                  >
-                    {item.status === 'pending'
-                      ? 'Pendiente'
-                      : item.status === 'completed'
-                      ? 'Completado'
-                      : 'En proceso'}
-                  </span>
-                </div>
+                {item.maintenanceDueDate &&
+                  new Date(item.maintenanceDueDate) < new Date() && (
+                    <span className='badge bg-danger ms-2'>
+                      <div className='text-xs'>Vencido</div>
+                    </span>
+                  )}
               </div>
               <div className='d-flex'>
                 <Link
@@ -139,8 +156,8 @@ const PnedingMaintenancesComponent = ({
                     console.log('clicked');
                   }}
                 >
-                  <i className='fas fa-check me-2' />
-                  Completado
+                  Iniciar
+                  <i className='fas fa-arrow-right ms-2' />
                 </div>
               </div>
             </div>
@@ -168,9 +185,11 @@ const PnedingMaintenancesComponent = ({
           </button>
         </div>
         <div className='card-body'>
-          {searchLoading && !searchResults.length && (
+          {(searchLoading || loading) && (
             <div className='d-flex justify-content-center align-items-center'>
-              <Spinner color='primary' />
+              <Spinner color='primary' /> <p className="text-muted texxt-sm m-0 ms-2">
+                Cargando mantenimientos pendientes...
+              </p>
             </div>
           )}
           {seraachError && (
@@ -188,6 +207,7 @@ const PnedingMaintenancesComponent = ({
             )}
 
           {searchResults.length > 0 &&
+            !loading &&
             !searchLoading &&
             !seraachError && (
               <div

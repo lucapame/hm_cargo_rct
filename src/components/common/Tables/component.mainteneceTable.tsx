@@ -1,6 +1,13 @@
 import React from 'react';
-import { Maintenance } from '../../../types/maintenece';
+import {
+  maintenaceTypeOptions,
+  Maintenance,
+} from '../../../types/maintenece';
 import { useNavigate } from 'react-router';
+import {
+  getStatusBadgeClass,
+  getStatusBadgeText,
+} from '../../../utils/helpers';
 
 interface TableProps {
   data: Maintenance[];
@@ -55,9 +62,32 @@ const MaintenancesTableComponent: React.FC<TableProps> = ({
                 <td></td>
                 <td>{maintenece.truckDisplayName}</td>
                 <td>{maintenece.date}</td>
-                <td>{maintenece.description}</td>
-                <td>{maintenece.type}</td>
-
+                <td>
+                  {maintenece.maintenanceDueDate}
+                  {maintenece.maintenanceDueDate &&
+                    new Date(maintenece.maintenanceDueDate) < new Date() && (
+                    <span className='badge bg-danger ms-2'>
+                     <div className="text-xs">
+                     Vencido
+                     </div>
+                    </span>
+                  )}
+                </td>
+                <td>
+                  {maintenaceTypeOptions.find(
+                    (option) => option.value === maintenece.type,
+                  )?.label || 'Tipo desconocido'}
+                </td>
+                <td>
+                  <span
+                    className={getStatusBadgeClass(
+                      maintenece.status,
+                      'pill',
+                    )}
+                  >
+                    {getStatusBadgeText(maintenece.status)}
+                  </span>
+                </td>
                 <td className='sort-progress' data-progress='30'>
                   <div className='row align-items-center'>
                     <div className='col-12 col-lg-2'>
@@ -74,9 +104,7 @@ const MaintenancesTableComponent: React.FC<TableProps> = ({
                           style={{ width: `${maintenece.progress}%` }}
                           role='progressbar'
                         >
-                          <span className='visually-hidden'>
-                            30% Complete
-                          </span>
+                          <span className='visually-hidden'></span>
                         </div>
                       </div>
                     </div>

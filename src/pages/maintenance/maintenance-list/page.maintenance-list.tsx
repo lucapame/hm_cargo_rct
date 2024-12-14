@@ -7,6 +7,7 @@ import {
   useAppSelector,
 } from '../../../utils/hooks/useReduxDispatch';
 import { getAllMaintenances } from '../../../redux/actions/maintenance.actions';
+import Spinner from '../../../components/common/component.spinner';
 
 const MaintenanceList = () => {
   const { loading, error, dataArray } = useAppSelector(
@@ -26,18 +27,18 @@ const MaintenanceList = () => {
           <h2 className='page-title'>Lista de Mantenimientos</h2>
         </div>
 
-        <div className='col-auto ms-auto d-print-none'>
+        <div className='col-auto ms-auto d-none'>
           <div className='btn-list'>
             <Link to='create' className='btn btn-primary '>
               <i className='fas fa-plus pe-2' />
               Crear mantenimiento
             </Link>
-          </div>
+          </div> 
         </div>
       </div>
 
       <div className='pending-maintenances mt-5'>
-        <PnedingMaintenancesComponent />
+        <PnedingMaintenancesComponent onlyPending />
       </div>
 
       <div className='mt-2'>
@@ -47,8 +48,9 @@ const MaintenanceList = () => {
               headers={[
                 'Vehículo',
                 'Fecha',
-                'Descripción',
+                'Fecha de vencimiento',
                 'Tipo',
+                'Estatus',
                 'Estado',
               ]}
               data={dataArray}
@@ -56,6 +58,14 @@ const MaintenanceList = () => {
             />
           </div>
         )}
+        {loading && !error && <div className='text-center'><Spinner color='primary my-2' /></div>}
+
+        {!loading && error && (
+          <div className='alert alert-danger' role='alert'>
+            {error}
+          </div>
+        )}
+
       </div>
     </div>
   );

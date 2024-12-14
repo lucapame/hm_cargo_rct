@@ -59,8 +59,8 @@ const TruckTable: React.FC<TableProps> = ({ data, headers }) => {
                 <td>{truck.vin}</td>
                 <td>
                   <span
-                    className={`${
-                      truck?.isActive ? 'status-green' : 'status-red'
+                    className={`badge rounded-pill ${
+                      truck?.isActive ? 'text-bg-success' : 'text-bg-yellow'
                     }
                 status `}
                   >
